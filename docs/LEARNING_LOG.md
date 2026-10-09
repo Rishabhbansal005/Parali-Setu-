@@ -423,4 +423,32 @@ To maintain integrity per Rule 9b, all capabilities are tracked below:
 - `flutter test`: **20/20 tests passed** (100% green).
 - `flutter analyze`: **0 issues found** (clean lint).
 
+---
+
+## Entry 12: Ultra-Premium Agritech UI Overhaul & Real Web Speech API Engine
+
+- **Date:** 2026-10-09
+- **Branch:** `feat/ui-overhaul-premium`
+- **Milestone:** Visual Overhaul across Web Portal & Mobile App with Real Voice Intake
+- **Status:** **BUILT & VERIFIED**
+
+### 1. What Was Built
+- **GoAgri-Inspired Web Operations Portal (`web/portal`):**
+  - **Premium Agricultural Aesthetic:** Engineered bespoke CSS design system with deep obsidian/emerald palette (`#070d14`, `#16a34a`, `#22c55e`), subtle glowing borders, glassmorphic cards, and animated ambient mesh gradients.
+  - **Desktop Sidebar Navigation:** Permanent vertical sidebar with branded agricultural wheat logo, role navigation tabs (Dharamkanta Scale, Bio-CNG Buyer, KVK DAO, Golden Path Trace), live FastAPI server health badge, and quick harvest context cards.
+  - **Ambient Header Bar:** Real-time Indian Standard Time (IST) clock, live Punjab harvest weather widget (28°C · Sunny), and dynamic escrow vault solvency counter.
+  - **Live Web Speech API Voice Intake:** Real in-browser microphone capture supporting Hindi (`hi-IN`) and Punjabi (`pa-IN`) with real-time audio wave pulses and AI entity parsing (farmer name, acres, variety, estimated recoverable yield).
+  - **Calibrated Dharamkanta Terminal:** Interactive consignment selector, automated tare-gross deduction, $|\text{Gross} - \text{Tare} - \text{Net}| \le 0.02\text{ t}$ sanity badge, live estimated payout calculation, and high-fidelity thermal slip printer preview.
+- **Lush Agricultural Mobile App Visual Upgrade (`app/lib/screens/home_screen.dart`):**
+  - **Ambient Weather & Season Bar:** Added top weather bar (28°C · Sunny · Tarn Taran Hub · Ideal condition for baling) matching reference designs.
+  - **Lush Hero Card:** Transformed primary estimate card with deep forest emerald gradients (`#0F3E15` to `#2E7D32`), wheat gold badges, micro-elevation, and voice-intake readiness chip.
+  - **100% Backward Compatibility:** Preserved all functional widget keys (`check_stubble_btn`, etc.), l10n strings, and state transitions.
+
+### 2. Verification Metrics
+- `npm run build` (Next.js 16.4 Turbopack): **100% clean production build (0 TypeScript or lint errors)**.
+- `flutter test`: **20/20 tests passed** (100% green).
+- `flutter analyze`: **0 issues found** (100% clean lint).
+- `pytest`: **35/35 tests passed** (100% green).
+
+
 
