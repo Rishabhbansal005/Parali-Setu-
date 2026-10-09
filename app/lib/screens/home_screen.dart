@@ -285,24 +285,92 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
 
-          const SizedBox(height: 24),
+          // Weather & Ambient Harvest banner (Matching reference design)
+          Container(
+            margin: const EdgeInsets.only(top: 14, bottom: 18),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF1F8F1),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFCDE4CD)),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.shade100,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.wb_sunny_rounded, color: Colors.amber, size: 20),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        '28°C · Sunny · Tarn Taran Hub',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.textDark,
+                        ),
+                      ),
+                      Text(
+                        'Ideal conditions for baling & residue collection',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Text(
+                    'Kharif 26',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.primaryGreen,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
 
           // Primary Hero Card: "Check my stubble value"
           Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
-            elevation: 2,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+            elevation: 4,
+            shadowColor: AppTheme.primaryGreen.withValues(alpha: 0.2),
             child: Container(
               padding: const EdgeInsets.all(22),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(22),
-                gradient: LinearGradient(
+                borderRadius: BorderRadius.circular(24),
+                gradient: const LinearGradient(
                   colors: [
+                    Color(0xFF0F3E15),
                     AppTheme.primaryGreen,
-                    AppTheme.secondaryGreen,
+                    Color(0xFF2E7D32),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.primaryGreen.withValues(alpha: 0.15),
+                    blurRadius: 16,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -315,6 +383,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         decoration: BoxDecoration(
                           color: AppTheme.wheatGold,
                           borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.1),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                         ),
                         child: Text(
                           strings.tonnesUnit,
@@ -325,7 +400,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                      const Icon(Icons.currency_rupee, color: Colors.white70, size: 26),
+                      Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.12),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.currency_rupee, color: Colors.white, size: 22),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 18),
@@ -342,12 +424,38 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(
                     strings.checkStubbleCardSubtitle,
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 14,
                       color: Colors.white.withValues(alpha: 0.9),
                       height: 1.35,
                     ),
                   ),
-                  const SizedBox(height: 22),
+
+                  // Voice intake feature chip
+                  Container(
+                    margin: const EdgeInsets.only(top: 14, bottom: 18),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.mic, color: Colors.amber, size: 16),
+                        SizedBox(width: 6),
+                        Text(
+                          'Voice Intake Ready (ਪੰਜਾਬੀ / हिंदी)',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
                   SizedBox(
                     height: 56,
                     width: double.infinity,
@@ -356,7 +464,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppTheme.wheatGold,
                         foregroundColor: Colors.white,
-                        elevation: 0,
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                       ),
                       onPressed: () {
                         Navigator.push(
@@ -373,7 +484,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(strings.estimateNowBtn),
+                          Text(
+                            strings.estimateNowBtn,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           const SizedBox(width: 8),
                           const Icon(Icons.arrow_forward, size: 20),
                         ],
