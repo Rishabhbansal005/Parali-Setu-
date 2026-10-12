@@ -1,4 +1,4 @@
-﻿<p align="center">
+<p align="center">
   <img src="https://img.shields.io/badge/Platform-Android%20%7C%20Web-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Stack-Flutter%20%7C%20FastAPI%20%7C%20Next.js-blue?style=for-the-badge" />
   <img src="https://img.shields.io/badge/AI-OR--Tools%20%7C%20Gemini%20%7C%20Sentinel--2-orange?style=for-the-badge" />
@@ -634,15 +634,6 @@ When a farmer uses ParaliSetu instead of burning:
 ## 📄 License
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
-
----
-
-## 👨‍💻 Team
-
-Built for the **Amazon Environmental Hacks Hackathon** (October 8–11, 2026).
-
-**Problem:** 20 million tonnes of parali burned every year in Punjab.
-**Solution:** One tap. Voice-first. Real cash. No burning.
 
 ---
 
