@@ -8,6 +8,10 @@ import '../constants.dart';
 import '../models/farm.dart';
 import '../models/estimate_result.dart';
 import '../models/user_profile.dart';
+import '../models/matched_bundle.dart';
+import '../models/booking_result.dart';
+import '../models/certificate_result.dart';
+import '../models/voice_intake_result.dart';
 
 class AuthTokens {
   final String accessToken;
@@ -33,6 +37,10 @@ class AuthTokens {
 }
 
 abstract class FarmerRepository {
+  String? get lastDebugOtp;
+  String? get lastOtpMessage;
+  String? get lastGatewayStatus;
+
   Future<bool> sendOtp(String phoneE164, {Function(String)? onStatusUpdate});
   Future<AuthTokens> verifyOtp(String phoneE164, String otp, {Function(String)? onStatusUpdate});
   Future<UserProfile> getProfile({Function(String)? onStatusUpdate});
@@ -60,6 +68,40 @@ abstract class FarmerRepository {
     double pricePerTonne = AppConstants.assumedPricePerTonneInr,
     Function(String)? onStatusUpdate,
   });
+  Future<List<MatchedBundle>> getMatchedBundles({
+    String? estimateId,
+    double acres = 4.0,
+    String variety = 'PR-126',
+    DateTime? harvestDate,
+    double? stubbleTonnes,
+    Function(String)? onStatusUpdate,
+  });
+  Future<BookingResult> createBooking({
+    required String offerId,
+    String? notes,
+    Function(String)? onStatusUpdate,
+  });
+  Future<BookingResult> getBooking({
+    required String bookingId,
+    Function(String)? onStatusUpdate,
+  });
+  Future<BookingResult> submitWeighbridgeTicket({
+    required String bookingId,
+    required double grossWeightTonnes,
+    required double tareWeightTonnes,
+    String? ticketNumber,
+    Function(String)? onStatusUpdate,
+  });
+  Future<CertificateResult> getCertificate({
+    required String bookingId,
+    Function(String)? onStatusUpdate,
+  });
+  Future<VoiceIntakeResult> parseVoiceInput({
+    required String transcript,
+    String language = 'hi',
+    String? referenceDate,
+    Function(String)? onStatusUpdate,
+  });
 }
 
 class ApiFarmerRepository implements FarmerRepository {
@@ -69,6 +111,18 @@ class ApiFarmerRepository implements FarmerRepository {
 
   String? _cachedAccessToken;
   String? _cachedFarmerId;
+  String? _lastDebugOtp;
+  String? _lastOtpMessage;
+  String? _lastGatewayStatus;
+
+  @override
+  String? get lastDebugOtp => _lastDebugOtp;
+
+  @override
+  String? get lastOtpMessage => _lastOtpMessage;
+
+  @override
+  String? get lastGatewayStatus => _lastGatewayStatus;
 
   ApiFarmerRepository({required this.baseUrl});
 
@@ -118,6 +172,12 @@ class ApiFarmerRepository implements FarmerRepository {
           body: jsonEncode({'phone_e164': phoneE164}),
         );
         if (response.statusCode == 200) {
+          try {
+            final data = jsonDecode(response.body);
+            _lastDebugOtp = data['debug_otp'] as String?;
+            _lastOtpMessage = data['message'] as String?;
+            _lastGatewayStatus = data['gateway_status'] as String?;
+          } catch (_) {}
           return true;
         } else {
           final errorData = jsonDecode(response.body);
@@ -151,6 +211,7 @@ class ApiFarmerRepository implements FarmerRepository {
           await _storage.write(key: AppConstants.keyAccessToken, value: accessToken);
           await _storage.write(key: AppConstants.keyRefreshToken, value: refreshToken);
           await _storage.write(key: AppConstants.keyFarmerId, value: farmerId);
+          await _storage.write(key: AppConstants.keyHasSeenOnboarding, value: 'true');
 
           // Eagerly fetch and cache profile
           try {
@@ -409,6 +470,214 @@ class ApiFarmerRepository implements FarmerRepository {
       },
     );
   }
+
+  @override
+  Future<List<MatchedBundle>> getMatchedBundles({
+    String? estimateId,
+    double acres = 4.0,
+    String variety = 'PR-126',
+    DateTime? harvestDate,
+    double? stubbleTonnes,
+    Function(String)? onStatusUpdate,
+  }) async {
+    return _executeWithRetry(
+      onStatusUpdate: onStatusUpdate,
+      action: () async {
+        final token = _cachedAccessToken ?? await _storage.read(key: AppConstants.keyAccessToken) ?? '';
+        final uri = Uri.parse('$baseUrl/matching/find-bundles');
+        final response = await _client.post(
+          uri,
+          headers: {
+            'Content-Type': 'application/json',
+            if (token.isNotEmpty) 'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({
+            'estimate_id': estimateId,
+            'acres': acres,
+            'paddy_variety': variety,
+            'harvest_date': (harvestDate ?? DateTime.now().add(const Duration(days: 2))).toIso8601String().substring(0, 10),
+            'stubble_tonnes': stubbleTonnes ?? (acres * 2.0),
+            'latitude': 30.25,
+            'longitude': 75.85,
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          final rawList = data['bundles'] as List<dynamic>? ?? [];
+          return rawList.map((e) => MatchedBundle.fromJson(e as Map<String, dynamic>)).toList();
+        } else {
+          final errorData = jsonDecode(response.body);
+          throw Exception(errorData['detail'] ?? 'Failed to match bundles');
+        }
+      },
+    );
+  }
+
+  @override
+  Future<BookingResult> createBooking({
+    required String offerId,
+    String? notes,
+    Function(String)? onStatusUpdate,
+  }) async {
+    return _executeWithRetry(
+      onStatusUpdate: onStatusUpdate,
+      action: () async {
+        final token = _cachedAccessToken ?? await _storage.read(key: AppConstants.keyAccessToken) ?? '';
+        final uri = Uri.parse('$baseUrl/bookings');
+        final response = await _client.post(
+          uri,
+          headers: {
+            'Content-Type': 'application/json',
+            if (token.isNotEmpty) 'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({
+            'offer_id': offerId,
+            'notes': notes,
+          }),
+        );
+
+        if (response.statusCode == 201 || response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          return BookingResult.fromJson(data);
+        } else {
+          final errorData = jsonDecode(response.body);
+          throw Exception(errorData['detail'] ?? 'Failed to create booking');
+        }
+      },
+    );
+  }
+
+  @override
+  Future<BookingResult> getBooking({
+    required String bookingId,
+    Function(String)? onStatusUpdate,
+  }) async {
+    return _executeWithRetry(
+      onStatusUpdate: onStatusUpdate,
+      action: () async {
+        final token = _cachedAccessToken ?? await _storage.read(key: AppConstants.keyAccessToken) ?? '';
+        final uri = Uri.parse('$baseUrl/bookings/$bookingId');
+        final response = await _client.get(
+          uri,
+          headers: {
+            'Content-Type': 'application/json',
+            if (token.isNotEmpty) 'Authorization': 'Bearer $token',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          return BookingResult.fromJson(data);
+        } else {
+          final errorData = jsonDecode(response.body);
+          throw Exception(errorData['detail'] ?? 'Failed to fetch booking');
+        }
+      },
+    );
+  }
+
+  @override
+  Future<BookingResult> submitWeighbridgeTicket({
+    required String bookingId,
+    required double grossWeightTonnes,
+    required double tareWeightTonnes,
+    String? ticketNumber,
+    Function(String)? onStatusUpdate,
+  }) async {
+    return _executeWithRetry(
+      onStatusUpdate: onStatusUpdate,
+      action: () async {
+        final token = _cachedAccessToken ?? await _storage.read(key: AppConstants.keyAccessToken) ?? '';
+        final uri = Uri.parse('$baseUrl/bookings/$bookingId/weighbridge');
+        final response = await _client.post(
+          uri,
+          headers: {
+            'Content-Type': 'application/json',
+            if (token.isNotEmpty) 'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({
+            'gross_weight_tonnes': grossWeightTonnes,
+            'tare_weight_tonnes': tareWeightTonnes,
+            'ticket_number': ticketNumber,
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          return BookingResult.fromJson(data);
+        } else {
+          final errorData = jsonDecode(response.body);
+          throw Exception(errorData['detail'] ?? 'Failed to submit weighbridge ticket');
+        }
+      },
+    );
+  }
+
+  @override
+  Future<CertificateResult> getCertificate({
+    required String bookingId,
+    Function(String)? onStatusUpdate,
+  }) async {
+    return _executeWithRetry(
+      onStatusUpdate: onStatusUpdate,
+      action: () async {
+        final token = _cachedAccessToken ?? await _storage.read(key: AppConstants.keyAccessToken) ?? '';
+        final uri = Uri.parse('$baseUrl/bookings/$bookingId/certificate');
+        final response = await _client.get(
+          uri,
+          headers: {
+            'Content-Type': 'application/json',
+            if (token.isNotEmpty) 'Authorization': 'Bearer $token',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          return CertificateResult.fromJson(data);
+        } else {
+          final errorData = jsonDecode(response.body);
+          throw Exception(errorData['detail'] ?? 'Failed to fetch certificate');
+        }
+      },
+    );
+  }
+
+  @override
+  Future<VoiceIntakeResult> parseVoiceInput({
+    required String transcript,
+    String language = 'hi',
+    String? referenceDate,
+    Function(String)? onStatusUpdate,
+  }) async {
+    return _executeWithRetry(
+      onStatusUpdate: onStatusUpdate,
+      action: () async {
+        final token = _cachedAccessToken ?? await _storage.read(key: AppConstants.keyAccessToken) ?? '';
+        final uri = Uri.parse('$baseUrl/voice/parse');
+        final response = await _client.post(
+          uri,
+          headers: {
+            'Content-Type': 'application/json',
+            if (token.isNotEmpty) 'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({
+            'transcript': transcript,
+            'language': language,
+            if (referenceDate != null) ...{'reference_date': referenceDate},
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          return VoiceIntakeResult.fromJson(data);
+        } else {
+          final errorData = jsonDecode(response.body);
+          throw Exception(errorData['detail'] ?? 'Failed to parse voice input');
+        }
+      },
+    );
+  }
 }
 
 class MockFarmerRepository implements FarmerRepository {
@@ -426,6 +695,15 @@ class MockFarmerRepository implements FarmerRepository {
   );
 
   @override
+  String? get lastDebugOtp => '123456';
+
+  @override
+  String? get lastOtpMessage => 'Demo Mode (Offline simulation)';
+
+  @override
+  String? get lastGatewayStatus => 'mock';
+
+  @override
   Future<bool> sendOtp(String phoneE164, {Function(String)? onStatusUpdate}) async {
     return true;
   }
@@ -437,6 +715,13 @@ class MockFarmerRepository implements FarmerRepository {
     _mockStorage[AppConstants.keyRefreshToken] = 'mock_jwt_refresh_token';
     _mockStorage[AppConstants.keyFarmerId] = _mockProfile.id;
     _mockStorage[AppConstants.keyCachedProfile] = jsonEncode(_mockProfile.toJson());
+
+    const storage = FlutterSecureStorage();
+    try {
+      await storage.write(key: AppConstants.keyAccessToken, value: 'mock_jwt_access_token');
+      await storage.write(key: AppConstants.keyCachedProfile, value: jsonEncode(_mockProfile.toJson()));
+      await storage.write(key: AppConstants.keyHasSeenOnboarding, value: 'true');
+    } catch (_) {}
 
     return AuthTokens(
       accessToken: 'mock_jwt_access_token',
@@ -496,6 +781,11 @@ class MockFarmerRepository implements FarmerRepository {
     _mockStorage.remove(AppConstants.keyRefreshToken);
     _mockStorage.remove(AppConstants.keyFarmerId);
     _mockStorage.remove(AppConstants.keyCachedProfile);
+    const storage = FlutterSecureStorage();
+    try {
+      await storage.delete(key: AppConstants.keyAccessToken);
+      await storage.delete(key: AppConstants.keyCachedProfile);
+    } catch (_) {}
   }
 
   @override
@@ -538,10 +828,297 @@ class MockFarmerRepository implements FarmerRepository {
       incomeHighInr: 9.60 * pricePerTonne,
     );
   }
+
+  @override
+  Future<List<MatchedBundle>> getMatchedBundles({
+    String? estimateId,
+    double acres = 4.0,
+    String variety = 'PR-126',
+    DateTime? harvestDate,
+    double? stubbleTonnes,
+    Function(String)? onStatusUpdate,
+  }) async {
+    final effectiveStubble = stubbleTonnes ?? (acres * 2.0);
+    final targetHarvest = harvestDate ?? DateTime.now().add(const Duration(days: 2));
+
+    return [
+      MatchedBundle(
+        offerId: 'off-1111-2222-3333-444455556666',
+        rank: 1,
+        tag: 'BEST_VALUE',
+        tagLabelEn: 'Best Net Payout',
+        tagLabelHi: 'सबसे ज्यादा मुनाफा',
+        tagLabelPa: 'ਸਭ ਤੋਂ ਵੱਧ ਮੁਨਾਫਾ',
+        proposedPickupDate: targetHarvest.add(const Duration(days: 2)),
+        daysAfterHarvest: 2,
+        machineName: 'Gurdeep Singh Agro Balers',
+        machineType: 'Claas Square Baler (CHC Sangrur)',
+        machineCostInr: acres * 1200.0,
+        truckName: 'Sharma Transport Logistics',
+        truckCapacityTonnes: 12.0,
+        transportCostInr: 540.0,
+        buyerName: 'Verbio India Bio-CNG Plant (Lehra Gaga)',
+        buyerType: 'Bio-CNG Refinery',
+        buyerDistanceKm: 18.5,
+        buyerPricePerTonneInr: 1350.0,
+        stubbleTonnes: effectiveStubble,
+        grossIncomeInr: effectiveStubble * 1350.0,
+        netIncomeInr: (effectiveStubble * 1350.0) - (acres * 1200.0) - 540.0,
+        co2SavedTonnes: effectiveStubble * 1.5,
+        pm25AvoidedKg: effectiveStubble * 18.0,
+      ),
+      MatchedBundle(
+        offerId: 'off-2222-3333-4444-555566667777',
+        rank: 2,
+        tag: 'FASTEST',
+        tagLabelEn: 'Fastest 24h Pickup',
+        tagLabelHi: 'सबसे तेज 24 घंटे में उठान',
+        tagLabelPa: 'ਸਭ ਤੋਂ ਤੇਜ਼ 24 ਘੰਟੇ ਚੁਕਾਈ',
+        proposedPickupDate: targetHarvest.add(const Duration(days: 1)),
+        daysAfterHarvest: 1,
+        machineName: 'Kisan Sahayata CHC Nabha',
+        machineType: 'New Holland Round Baler',
+        machineCostInr: acres * 1350.0,
+        truckName: 'Punjab Kisan Express (Tata 1613)',
+        truckCapacityTonnes: 16.0,
+        transportCostInr: 680.0,
+        buyerName: 'Sukhbir Agro Bio-Pellets (Sunam)',
+        buyerType: 'Biomass Pellet Mill',
+        buyerDistanceKm: 14.2,
+        buyerPricePerTonneInr: 1250.0,
+        stubbleTonnes: effectiveStubble,
+        grossIncomeInr: effectiveStubble * 1250.0,
+        netIncomeInr: (effectiveStubble * 1250.0) - (acres * 1350.0) - 680.0,
+        co2SavedTonnes: effectiveStubble * 1.5,
+        pm25AvoidedKg: effectiveStubble * 18.0,
+      ),
+      MatchedBundle(
+        offerId: 'off-3333-4444-5555-666677778888',
+        rank: 3,
+        tag: 'LOCAL_GREEN',
+        tagLabelEn: 'Local Clean Energy Plant',
+        tagLabelHi: 'स्थानीय स्वच्छ ऊर्जा प्लांट',
+        tagLabelPa: 'ਸਥਾਨਕ ਸਾਫ਼ ਊਰਜਾ ਪਲਾਂਟ',
+        proposedPickupDate: targetHarvest.add(const Duration(days: 3)),
+        daysAfterHarvest: 3,
+        machineName: 'Malwa Precision Balers',
+        machineType: 'Sonalika Stubble Packer',
+        machineCostInr: acres * 1100.0,
+        truckName: 'Dhillon Heavy Transport',
+        truckCapacityTonnes: 10.0,
+        transportCostInr: 820.0,
+        buyerName: 'Shree Ganesh Paper & Pulp Board',
+        buyerType: 'Paper Mill',
+        buyerDistanceKm: 26.0,
+        buyerPricePerTonneInr: 1180.0,
+        stubbleTonnes: effectiveStubble,
+        grossIncomeInr: effectiveStubble * 1180.0,
+        netIncomeInr: (effectiveStubble * 1180.0) - (acres * 1100.0) - 820.0,
+        co2SavedTonnes: effectiveStubble * 1.5,
+        pm25AvoidedKg: effectiveStubble * 18.0,
+      ),
+    ];
+  }
+
+  final Map<String, BookingResult> _mockBookings = {};
+
+  @override
+  Future<BookingResult> createBooking({
+    required String offerId,
+    String? notes,
+    Function(String)? onStatusUpdate,
+  }) async {
+    final bookingId = 'bk-${DateTime.now().millisecondsSinceEpoch}';
+    final result = BookingResult(
+      id: bookingId,
+      offerId: offerId,
+      farmerId: _mockProfile.id,
+      status: 'confirmed',
+      escrowAmountInr: 5460.0,
+      confirmedAt: DateTime.now(),
+      payment: PaymentSummary(
+        id: 'pm-${DateTime.now().millisecondsSinceEpoch}',
+        bookingId: bookingId,
+        provider: 'simulated_escrow',
+        escrowAmountInr: 5460.0,
+        status: 'held',
+        heldAt: DateTime.now(),
+      ),
+    );
+    _mockBookings[bookingId] = result;
+    return result;
+  }
+
+  @override
+  Future<BookingResult> getBooking({
+    required String bookingId,
+    Function(String)? onStatusUpdate,
+  }) async {
+    if (_mockBookings.containsKey(bookingId)) {
+      return _mockBookings[bookingId]!;
+    }
+    return BookingResult(
+      id: bookingId,
+      offerId: 'off-1111-2222-3333-444455556666',
+      farmerId: _mockProfile.id,
+      status: 'confirmed',
+      escrowAmountInr: 5460.0,
+      confirmedAt: DateTime.now(),
+      payment: PaymentSummary(
+        id: 'pm-mock',
+        bookingId: bookingId,
+        provider: 'simulated_escrow',
+        escrowAmountInr: 5460.0,
+        status: 'held',
+        heldAt: DateTime.now(),
+      ),
+    );
+  }
+
+  @override
+  Future<BookingResult> submitWeighbridgeTicket({
+    required String bookingId,
+    required double grossWeightTonnes,
+    required double tareWeightTonnes,
+    String? ticketNumber,
+    Function(String)? onStatusUpdate,
+  }) async {
+    final netTonnes = (grossWeightTonnes - tareWeightTonnes);
+    final netKg = netTonnes * 1000.0;
+    final now = DateTime.now();
+    final grossIncome = netTonnes * 1350.0;
+    final netPayout = (grossIncome - 4800.0 - 540.0).clamp(0.0, double.infinity);
+
+    final current = await getBooking(bookingId: bookingId);
+    final updated = current.copyWith(
+      status: 'paid',
+      finalPayoutInr: netPayout,
+      weighedAt: now,
+      paidAt: now,
+      pickedUpAt: current.pickedUpAt ?? now.subtract(const Duration(hours: 3)),
+      payment: PaymentSummary(
+        id: current.payment?.id ?? 'pm-mock',
+        bookingId: bookingId,
+        provider: 'simulated_escrow',
+        escrowAmountInr: current.escrowAmountInr ?? 5460.0,
+        finalAmountInr: netPayout,
+        status: 'released',
+        heldAt: current.payment?.heldAt ?? now.subtract(const Duration(hours: 24)),
+        releasedAt: now,
+      ),
+      weighbridgeRecord: WeighbridgeSummary(
+        id: 'wb-mock-${now.millisecondsSinceEpoch}',
+        bookingId: bookingId,
+        weightKg: netKg,
+        weightTonnes: double.parse(netTonnes.toStringAsFixed(2)),
+        ticketNumber: ticketNumber ?? 'DK-778899',
+        measuredAt: now,
+      ),
+    );
+    _mockBookings[bookingId] = updated;
+    return updated;
+  }
+
+  @override
+  Future<CertificateResult> getCertificate({
+    required String bookingId,
+    Function(String)? onStatusUpdate,
+  }) async {
+    final current = await getBooking(bookingId: bookingId);
+    final tonnes = current.weighbridgeRecord?.weightTonnes ?? 8.0;
+    return CertificateResult(
+      certificateId: 'CERT-PSETU-${bookingId.length > 8 ? bookingId.substring(0, 8).toUpperCase() : "889900"}',
+      bookingId: bookingId,
+      farmerName: _mockProfile.name ?? 'Gurpreet Singh',
+      village: _mockProfile.village ?? 'Kot Buddha',
+      district: _mockProfile.district ?? 'Tarn Taran',
+      state: 'Punjab',
+      stubbleTonnes: tonnes,
+      satelliteSource: 'Copernicus Sentinel-2 (SWIR B12-B8)',
+      imageDate: DateTime.now().toIso8601String().substring(0, 10),
+      cloudCoverPct: 4.2,
+      deltaNbr: 0.038,
+      resultState: 'verified_no_burn',
+      burnDetected: false,
+      burnSeverity: 'NONE',
+      co2AvoidedTonnes: tonnes * 1.5,
+      pm25AvoidedKg: tonnes * 18.0,
+      equivalentTrees: (tonnes * 1500 / 21.77).floor(),
+      issuedAt: DateTime.now().toIso8601String(),
+      isValid: true,
+      authority: 'Punjab Clean Air & Agriculture Initiative',
+      verificationNotes: 'Clean mechanical harvest verified. Sentinel-2 SWIR index proves zero fire scars.',
+    );
+  }
+
+  @override
+  Future<VoiceIntakeResult> parseVoiceInput({
+    required String transcript,
+    String language = 'hi',
+    String? referenceDate,
+    Function(String)? onStatusUpdate,
+  }) async {
+    onStatusUpdate?.call('Analyzing voice audio...');
+    await Future.delayed(const Duration(milliseconds: 300));
+
+    final clean = transcript.toLowerCase();
+    double acres = 4.0;
+    String variety = 'PR-126';
+    String harvestDate = '2026-10-25';
+
+    if (clean.contains('10 bigha') || clean.contains('10 bighe') || clean.contains('10 ਬੀਘੇ') || clean.contains('10 बीघा')) {
+      acres = 2.0;
+    } else if (clean.contains('6 killa') || clean.contains('6 ਕਿੱਲੇ') || clean.contains('6 किल्ले')) {
+      acres = 6.0;
+    } else if (clean.contains('2 killa') || clean.contains('2 ਕਿੱਲੇ') || clean.contains('2 किल्ले')) {
+      acres = 2.0;
+    } else if (clean.contains('5 killa') || clean.contains('5 ਕਿੱਲੇ') || clean.contains('5 किल्ले')) {
+      acres = 5.0;
+    } else if (clean.contains('4 killa') || clean.contains('4 ਕਿੱਲੇ') || clean.contains('4 किल्ले')) {
+      acres = 4.0;
+    }
+
+    if (clean.contains('pusa-44') || clean.contains('pusa 44') || clean.contains('ਪੂਸਾ 44') || clean.contains('पूसा 44') || clean.contains('44')) {
+      variety = 'Pusa-44';
+    } else if (clean.contains('basmati') || clean.contains('ਬਾਸਮਤੀ') || clean.contains('बासमती')) {
+      variety = 'Basmati';
+    } else {
+      variety = 'PR-126';
+    }
+
+    if (clean.contains('25') || clean.contains('25 october') || clean.contains('25 ਅਕਤੂਬਰ') || clean.contains('25 अक्टूबर')) {
+      harvestDate = '2026-10-25';
+    } else if (clean.contains('28') || clean.contains('28 ਅਕਤੂਬਰ') || clean.contains('28 october')) {
+      harvestDate = '2026-10-28';
+    } else if (clean.contains('26 october') || clean.contains('26 ਅਕਤੂਬਰ') || clean.contains('26 tareek') || clean.contains('26 तारीख')) {
+      harvestDate = '2026-10-26';
+    } else if (clean.contains('kal') || clean.contains('ਕੱਲ੍ਹ') || clean.contains('कल')) {
+      harvestDate = '2026-10-21';
+    } else if (clean.contains('parso') || clean.contains('ਪਰਸੋਂ') || clean.contains('परसों')) {
+      harvestDate = '2026-10-22';
+    } else {
+      harvestDate = '2026-10-25';
+    }
+
+    final prompt = language == 'pa'
+        ? 'ਤੁਸੀਂ ਕਿਹਾ: ${acres.toStringAsFixed(0)} ਕਿੱਲਾ $variety, 25 ਅਕਤੂਬਰ। ਕੀ ਇਹ ਸਹੀ ਹੈ?'
+        : (language == 'en'
+            ? 'You said: ${acres.toStringAsFixed(0)} Acres $variety, 25 October. Is this correct?'
+            : 'आपने बोला: ${acres.toStringAsFixed(0)} किल्ला $variety, 25 अक्टूबर। सही है?');
+
+    return VoiceIntakeResult(
+      acres: acres,
+      variety: variety,
+      harvestDate: harvestDate,
+      confidence: 0.94,
+      confirmationPrompt: prompt,
+      transcriptRecognized: transcript,
+    );
+  }
 }
 
 class RepositoryProvider {
-  static const String definedBaseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: '');
+  static const String definedBaseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: 'http://localhost:8000');
 
   static FarmerRepository getRepository() {
     if (definedBaseUrl.isNotEmpty && !definedBaseUrl.contains('example.com')) {

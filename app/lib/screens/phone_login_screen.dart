@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../l10n/app_strings.dart';
@@ -250,7 +249,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
 
               const SizedBox(height: 24),
 
-              // Demo mode notices
+              // Info notice
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(14),
@@ -259,32 +258,20 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(color: const Color(0xFFC5E1A5)),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
                   children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.info_outline, color: AppTheme.secondaryGreen, size: 20),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            strings.demoSmsNotice,
-                            style: const TextStyle(fontSize: 13, color: AppTheme.textDark),
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (kDebugMode) ...[
-                      const Divider(height: 18, color: Color(0xFFC5E1A5)),
-                      Text(
-                        strings.demoHint,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.primaryGreen,
-                        ),
+                    const Icon(Icons.verified_user_outlined, color: AppTheme.primaryGreen, size: 22),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        widget.currentLanguage == AppLanguage.hindi
+                            ? 'सुरक्षित मोबाइल लॉगिन: अपना 10 अंकों का फोन नंबर दर्ज करें और ओटीपी प्राप्त करें।'
+                            : widget.currentLanguage == AppLanguage.punjabi
+                                ? 'ਸੁਰੱਖਿਅਤ ਮੋਬਾਈਲ ਲਾਗਇਨ: ਆਪਣਾ 10 ਅੰਕਾਂ ਦਾ ਫੋਨ ਨੰਬਰ ਦਰਜ ਕਰੋ ਅਤੇ OTP ਪ੍ਰਾਪਤ ਕਰੋ।'
+                                : 'Secure Mobile Login: Enter your 10-digit mobile number to receive verification OTP.',
+                        style: const TextStyle(fontSize: 13, color: AppTheme.textDark, height: 1.3),
                       ),
-                    ],
+                    ),
                   ],
                 ),
               ),

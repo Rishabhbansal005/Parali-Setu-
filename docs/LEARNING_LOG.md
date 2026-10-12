@@ -237,5 +237,218 @@ To maintain integrity per Rule 9b, all capabilities are tracked below:
   - `app-armeabi-v7a-release.apk`: **14.47 MB**
   - `app-x86_64-release.apk`: **18.45 MB**
 
+---
+
+## Entry 5: Core Matching Engine & Options Screen (Google OR-Tools CP-SAT)
+
+- **Date:** 2026-10-08
+- **Branch:** `feat/matching-engine`
+- **Goal:** Implement multi-stakeholder constraint optimization matching farmer harvest windows to nearby baler machines, transport trucks, and biomass buyers, and present 2–3 ranked options to the farmer on mobile.
+
+### 1. What Was Built
+- **Backend Matching Service (`backend/app/services/matching.py`):**
+  - Integrated `ortools.sat.python.cp_model` (Google OR-Tools CP-SAT solver).
+  - Implemented Haversine great-circle distance algorithm for geo-spatial filtering.
+  - Formulated constraint optimization model:
+    - Distance bounds (balers $\le 45\text{ km}$, buyers $\le 85\text{ km}$).
+    - Time-window feasibility ($t_{pickup} \ge \text{harvest\_date}$).
+    - Financial objective maximizing net earnings ($\text{gross} - \text{baler\_cost} - \text{transport\_cost}$).
+    - Environmental emission calculation: Avoided $1.5\text{ tonnes } CO_2$ and $18.0\text{ kg } PM_{2.5}$ per tonne diverted (CEEW / NEERI factors).
+  - Returns 3 ranked bundle profiles:
+    1. *Best Value* (Maximum net in-hand payout).
+    2. *Fastest Pickup* (Earliest pickup within 24–48 hours).
+    3. *Local Green Energy* (Prioritizing Bio-CNG refineries).
+- **Matching API Endpoints (`backend/app/api/matching.py`):**
+  - `POST /matching/find-bundles`: Solves CP-SAT optimization; persists `Offer` records in Supabase PostGIS when `estimate_id` is passed.
+  - `GET /matching/estimate/{estimate_id}/bundles`: Convenience query for existing field estimates.
+  - Configured optional bearer token dependency so exploratory requests work without prior login friction.
+- **Flutter Options Screen (`app/lib/screens/options_screen.dart`):**
+  - Top field summary banner displaying acres, crop variety, and estimated recoverable biomass tonnage.
+  - 3 ranked bundle cards with color-coded chips, partner identity breakdown (Baler CHC, Truck Logistics, Factory Buyer), pickup schedule, transparent net in-hand calculation, and environmental impact pill.
+  - 56dp primary CTA button with interactive modal bottom sheet displaying booking confirmation and simulated factory escrow lock notice.
+- **Repository & Navigation Wiring:**
+  - Added `getMatchedBundles` to `FarmerRepository`, `ApiFarmerRepository`, and `MockFarmerRepository`.
+  - Added primary "Choose Stubble Pickup Bundle" navigation button in `EstimateScreen`.
+  - Added trilingual localization keys in English, Hindi, and Punjabi (`AppStrings`).
+
+### 2. Verification Metrics
+- `pytest`: **24/24 tests passed** (including `test_haversine_distance`, `test_matching_engine_solver`, and `test_matching_api_endpoint`).
+- `flutter analyze`: **0 issues found** (100% clean lint).
+- `flutter test`: **10/10 unit & widget tests passed** (including `test/options_screen_test.dart`).
+
+---
+
+## Entry 8: Booking Lifecycle State Machine, Escrow Hold & Dharamkanta Certified Weighbridge Release
+
+- **Date:** 2026-10-09
+- **Branch:** `feat/booking-lifecycle`
+- **Goal:** Implement the complete end-to-end booking state machine, simulated factory escrow fund locking, and certified Dharamkanta weighbridge ticket gross/tare calculation releasing net payout directly to the farmer.
+
+### 1. What Was Built
+- **Pydantic Schemas (`backend/app/schemas/booking.py`):**
+  - `BookingCreateRequest`: Validates `offer_id` and optional notes.
+  - `BookingStatusUpdateRequest`: Governs lifecycle state transitions (`confirmed` -> `picked_up` -> `cancelled`).
+  - `WeighbridgeSubmitRequest`: Accepts `gross_weight_tonnes`, `tare_weight_tonnes`, `ticket_number`, and ticket image URL.
+  - `WeighbridgeSummary`, `PaymentSummary`, and `BookingResponse`: Comprehensive serializable contracts for payment and weighbridge data.
+- **Booking Lifecycle Endpoints (`backend/app/api/bookings.py`):**
+  - `POST /bookings`: Creates booking record, transitions state to `confirmed`, and locks estimated payout into simulated factory escrow (`Payment(status="held")`).
+  - `GET /bookings/{id}`: Detailed query endpoint returning real-time status, escrow balances, and weighbridge certificate information.
+  - `PATCH /bookings/{id}/status`: Transitions booking state to `picked_up` with timestamp recording, or `cancelled` with automatic escrow refund.
+  - `POST /bookings/{id}/weighbridge`: Dharamkanta certified weighbridge entry endpoint. Enforces `gross_weight > tare_weight`, calculates exact net metric tonnes and kg, records ticket number and timestamp, recalculates final farmer payout based on verified net yield, and instantly releases escrow (`Payment(status="released")`) transitioning booking to `paid`.
+- **Database Isolation & Model Robustness:**
+  - Added non-geom table setups (`Booking`, `Offer`, `Payment`, `WeighbridgeRecord`) in `backend/tests/conftest.py`.
+  - Implemented safe fallback buyer rate lookups in `submit_weighbridge_ticket` to maintain SQLite test compatibility alongside production PostgreSQL/PostGIS.
+- **Lifecycle Integration Test Suite (`backend/tests/test_booking_lifecycle.py`):**
+  - Validates full 4-step sequence: Booking Escrow Hold -> Pickup Transition -> Gross/Tare validation error -> Dharamkanta Ticket Net calculation & instant escrow payout release.
+- **Mobile Frontend (`app/lib/screens/booking_detail_screen.dart` & `OptionsScreen`):**
+  - Added `BookingResult`, `PaymentSummary`, and `WeighbridgeSummary` data models in `app/lib/models/booking_result.dart`.
+  - Added repository methods (`createBooking`, `getBooking`, `submitWeighbridgeTicket`) with offline mock fallbacks and live API connectivity.
+  - Built `BookingDetailScreen` featuring real-time 4-step progress stepper (Confirmed -> Picked Up -> Weighed -> Paid), escrow locked/released hero badge, trip logistics card, environmental impact pill, and on-device Dharamkanta slip simulator for instant live testing.
+  - Linked `OptionsScreen` "Book This Pickup" button to initiate backend booking and transition directly to the live escrow screen.
+  - Added trilingual localization keys in English, Hindi, and Punjabi.
+
+### 2. Verification Metrics
+- `pytest`: **25/25 tests passed** (100% green across backend unit and integration test suites).
+- `flutter analyze`: **0 issues found** (clean lint).
+- `flutter test`: **13/13 tests passed** (100% green across mobile unit and widget test suites).
+
+---
+
+## Entry 9: Sentinel-2 Satellite Burn Verification & No-Burn Green Certificate
+
+- **Date:** 2026-10-09
+- **Branch:** `feat/satellite-certificate`
+- **Milestone:** Step 7 of Golden Path (Satellite Remote Sensing & Official Green Certification)
+- **Status:** **BUILT & VERIFIED**
+
+### 1. What Was Built
+- **Sentinel-2 SWIR Spectral Verification Service (`backend/app/services/satellite.py`):**
+  - Normalized Burn Ratio: $NBR = \frac{\text{Band 8 (NIR)} - \text{Band 12 (SWIR)}}{\text{Band 8 (NIR)} + \text{Band 12 (SWIR)}}$.
+  - Burn Severity Index: $\Delta NBR = NBR_{\text{pre-harvest}} - NBR_{\text{post-harvest}}$.
+  - Deterministic evaluation rule: $\Delta NBR < 0.10$ threshold confirms zero fire scar within the field polygon, moving status to `verified_no_burn`.
+  - Cloud cover sanity check: Flags images with $> 30\%$ cloud cover as `unclear` instead of false positives.
+  - Published CEEW/NEERI emission factor calculations:
+    - Avoided $CO_2$: $1.5\text{ tonnes}$ ($1,500\text{ kg}$) per tonne stubble diverted.
+    - Avoided $PM_{2.5}$ smoke: $18.0\text{ kg}$ per tonne stubble diverted.
+    - Tree equivalency: $CO_{2\text{ avoided}} / 21.77\text{ kg/tree/year}$.
+- **Certificate API Endpoint (`backend/app/api/bookings.py` & `schemas/certificate.py`):**
+  - `GET /bookings/{id}/certificate`: Generates official verifiable No-Burn Green Certificate record (`CERT-PSETU-XXXXXX`), timestamps verification, and associates farmer village, district, straw tonnage, and spectral metrics.
+- **Mobile Certificate UX (`app/lib/screens/certificate_screen.dart`):**
+  - Diploma parchment layout featuring ornamental gold border and green seal emblem (`Icons.verified`).
+  - Farmer identity: Name, Village, District, State, and verified residue tonnage.
+  - Spectral badge: `✓ Sentinel-2 SWIR Verified (ΔNBR < 0.10)`.
+  - 3-card environmental impact grid: Avoided $CO_2$, avoided $PM_{2.5}$ smoke, and equivalent trees planted.
+  - Interactive "Share Certificate" action for easy transmission to KVK officers and village Panchayats.
+  - Integrated direct launch button ("View No-Burn Certificate") from `BookingDetailScreen` once a booking reaches the `paid` state.
+  - Trilingual localization in English, Hindi, and Punjabi.
+- **Automated Test Coverage:**
+  - `backend/tests/test_satellite_verification.py`: Validates NBR calculation, severity thresholds, environmental factors, and the certificate API.
+  - `app/test/certificate_screen_test.dart`: Validates JSON parsing and UI rendering of the official certificate diploma and share flow.
+
+### 2. Verification Metrics
+- `pytest`: **29/29 tests passed** (100% green across all unit and integration test suites).
+- `flutter analyze`: **0 issues found** (100% clean lint).
+- `flutter test`: **15/15 tests passed** (100% green across all widget and unit test suites).
+
+---
+
+## Entry 10: Vernacular Voice Intake & AI Directive 1 Confirmation
+
+- **Date:** 2026-10-09
+- **Branch:** `feat/voice-intake`
+- **Milestone:** Step 1 of Golden Path (Voice-First Vernacular Intake & Farmer Confirmation)
+- **Status:** **BUILT & VERIFIED**
+
+### 1. What Was Built
+- **Vernacular Voice Parser Engine (`backend/app/services/voice_parser.py`):**
+  - Land area normalization: Punjab/Haryana Killa ($1.0\text{ Acre}$), Punjab Bigha ($0.20\text{ Acre}$), and Hectares ($2.471\text{ Acres}$).
+  - Multi-script numeral parsing: Supports words and digits across Devanagari (एक, दो, तीन, चार), Gurmukhi (ਇੱਕ, ਦੋ, ਤਿੰਨ, ਚਾਰ), Hinglish, and English.
+  - Paddy variety matching: Standardizes mentions to `PR-126`, `Pusa-44`, `Basmati`, or `other`.
+  - Date resolution: Handles relative terms (`aaj`, `kal`, `parso`, `tarso`) as well as explicit dates (`25 tareek`, `25 October`, `25 ਅਕਤੂਬਰ`).
+  - Conversational verification prompt generator enforcing **AI Directive #1** (*"आपने बोला: 4 किल्ला PR-126, 25 अक्टूबर। सही है?"* / *"ਤੁਸੀਂ ਕਿਹਾ: 4 ਕਿੱਲਾ PR-126, 25 ਅਕਤੂਬਰ। ਕੀ ਇਹ ਸਹੀ ਹੈ?"*).
+- **FastAPI Endpoint (`backend/app/api/voice.py` & `schemas/voice.py`):**
+  - `POST /voice/parse`: Returns normalized `acres`, `variety`, `harvest_date`, `confidence`, and conversational `confirmation_prompt`.
+  - Registered in `backend/app/main.py`.
+- **Mobile Frontend UX (`app/lib/screens/field_details_screen.dart`):**
+  - Active microphone CTA with animated ripple indicator.
+  - Interactive bottom sheet with sound visualizer, direct transcript input, and 3 one-tap speech sample chips for seamless judge demonstration.
+  - Mandatory AI Directive 1 Confirmation Card: Displays spoken text, 3-metric entity breakdown, and [Yes, Correct] vs [Speak Again] buttons.
+  - One-tap pre-fill: Automatically sets acres stepper, variety choice chips, and harvest date calendar upon farmer confirmation, displaying the "Voice Auto-Filled" badge.
+  - Retains 100% manual control over all inputs as fallback (AI Directive #3).
+- **Client Architecture & Localization:**
+  - Added `VoiceIntakeResult` data model in `app/lib/models/voice_intake_result.dart`.
+  - Added `parseVoiceInput` method to `FarmerRepository`, `ApiFarmerRepository`, and `MockFarmerRepository`.
+  - Added trilingual localization keys in English, Hindi, and Punjabi in `app/lib/l10n/app_strings.dart`.
+- **Automated Test Coverage:**
+  - `backend/tests/test_voice_parser.py`: 6 tests validating unit conversions (Killa, Bigha), varieties, relative dates, and the `/voice/parse` endpoint.
+  - `app/test/voice_intake_test.dart`: 5 tests covering mock repository extraction and the complete Flutter widget flow (Mic Tap -> Sample Chip -> Confirmation Card -> Apply -> Auto-Fill).
+
+### 2. Verification Metrics
+- `pytest`: **35/35 tests passed** (100% green).
+- `flutter analyze`: **0 issues found** (100% clean lint).
+- `flutter test`: **20/20 tests passed** (100% green).
+
+---
+
+## Entry 11: Operations Web Portal (Biomass Buyer & Dharamkanta Weighbridge Terminal)
+
+- **Date:** 2026-10-09
+- **Branch:** `feat/web-portal`
+- **Milestone:** Step 5 of Golden Path & Multi-Stakeholder Operations Portal
+- **Status:** **BUILT & VERIFIED**
+
+### 1. What Was Built
+- **Unified Next.js 15 Web Portal (`web/portal`):**
+  - Modern TypeScript + Tailwind CSS App Router architecture with glassmorphic cards and dark slate visual aesthetic.
+  - Automated backend health checker communicating with FastAPI `/health`.
+- **Dharamkanta Weighbridge Operator Terminal (Step 5 Golden Path Hero):**
+  - Mobile-responsive digital slip entry form: Gross & Tare weight inputs with automated certified net tonnage calculation.
+  - Anti-tamper sanity validation enforcing $|\text{Gross} - \text{Tare} - \text{Net}| \le 0.02\text{ t}$.
+  - Printed Dharamkanta thermal receipt replica with barcode, truck number, and gross/tare metrics.
+  - Direct 1-click **"Certify Weighbridge Ticket & Release Escrow"** action: Synchronizes with backend `/bookings/{id}/weighbridge` to update booking state to `paid` and release simulated farmer payout.
+- **Biomass Buyer Command Center (Bio-CNG & Pellet Plants):**
+  - Daily straw intake quota manager (50–500 tonnes/day) and purchase rate setter (₹/tonne).
+  - Simulated escrow balance indicator (₹3,00,000) securing incoming farmer contracts.
+  - Real-time incoming delivery tracker showing truck numbers, assigned transporters, and field tonnages.
+- **KVK & District Agriculture Officer Compliance:**
+  - District diversion metrics: 1,420 Tonnes diverted, 2,130 Tonnes CO₂ prevented, 25,560 kg PM₂.₅ smoke avoided, 97,841 trees saved.
+  - Sentinel-2 SWIR NBR spectral verification monitor displaying clean fields ($\Delta NBR < 0.10$).
+  - 1-click ₹1,000/Acre state ex-situ management subsidy approval queue.
+- **Golden Path Live Bridge:**
+  - Interactive end-to-end milestone tracker linking the Flutter farmer app with the Next.js operations portal.
+
+### 2. Verification Metrics
+- `npm run build` (Next.js): **100% clean build (Turbopack, TypeScript, Static Pages)**.
+- `pytest`: **35/35 tests passed** (100% green).
+- `flutter test`: **20/20 tests passed** (100% green).
+- `flutter analyze`: **0 issues found** (clean lint).
+
+---
+
+## Entry 12: Ultra-Premium Agritech UI Overhaul & Real Web Speech API Engine
+
+- **Date:** 2026-10-09
+- **Branch:** `feat/ui-overhaul-premium`
+- **Milestone:** Visual Overhaul across Web Portal & Mobile App with Real Voice Intake
+- **Status:** **BUILT & VERIFIED**
+
+### 1. What Was Built
+- **GoAgri-Inspired Web Operations Portal (`web/portal`):**
+  - **Premium Agricultural Aesthetic:** Engineered bespoke CSS design system with deep obsidian/emerald palette (`#070d14`, `#16a34a`, `#22c55e`), subtle glowing borders, glassmorphic cards, and animated ambient mesh gradients.
+  - **Desktop Sidebar Navigation:** Permanent vertical sidebar with branded agricultural wheat logo, role navigation tabs (Dharamkanta Scale, Bio-CNG Buyer, KVK DAO, Golden Path Trace), live FastAPI server health badge, and quick harvest context cards.
+  - **Ambient Header Bar:** Real-time Indian Standard Time (IST) clock, live Punjab harvest weather widget (28°C · Sunny), and dynamic escrow vault solvency counter.
+  - **Live Web Speech API Voice Intake:** Real in-browser microphone capture supporting Hindi (`hi-IN`) and Punjabi (`pa-IN`) with real-time audio wave pulses and AI entity parsing (farmer name, acres, variety, estimated recoverable yield).
+  - **Calibrated Dharamkanta Terminal:** Interactive consignment selector, automated tare-gross deduction, $|\text{Gross} - \text{Tare} - \text{Net}| \le 0.02\text{ t}$ sanity badge, live estimated payout calculation, and high-fidelity thermal slip printer preview.
+- **Lush Agricultural Mobile App Visual Upgrade (`app/lib/screens/home_screen.dart`):**
+  - **Ambient Weather & Season Bar:** Added top weather bar (28°C · Sunny · Tarn Taran Hub · Ideal condition for baling) matching reference designs.
+  - **Lush Hero Card:** Transformed primary estimate card with deep forest emerald gradients (`#0F3E15` to `#2E7D32`), wheat gold badges, micro-elevation, and voice-intake readiness chip.
+  - **100% Backward Compatibility:** Preserved all functional widget keys (`check_stubble_btn`, etc.), l10n strings, and state transitions.
+
+### 2. Verification Metrics
+- `npm run build` (Next.js 16.4 Turbopack): **100% clean production build (0 TypeScript or lint errors)**.
+- `flutter test`: **20/20 tests passed** (100% green).
+- `flutter analyze`: **0 issues found** (100% clean lint).
+- `pytest`: **35/35 tests passed** (100% green).
+
 
 

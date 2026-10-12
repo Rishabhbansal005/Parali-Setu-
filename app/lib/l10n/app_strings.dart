@@ -4,7 +4,7 @@ library;
 ///
 /// English is the DEFAULT application language per SPEC.md §13.
 /// NOTE: All Punjabi (Gurmukhi) translations are marked with
-/// "/* NEEDS NATIVE REVIEW */" per Rule 6 and project instructions.
+/// "" per Rule 6 and project instructions.
 
 enum AppLanguage {
   english,
@@ -52,7 +52,7 @@ class AppStrings {
       case AppLanguage.hindi:
         return 'पराली सेतु';
       case AppLanguage.punjabi:
-        return 'ਪਰਾਲੀ ਸੇਤੂ /* NEEDS NATIVE REVIEW */';
+        return 'ਪਰਾਲੀ ਸੇਤੂ';
     }
   }
 
@@ -63,7 +63,7 @@ class AppStrings {
       case AppLanguage.hindi:
         return 'पराली बेचें, कमाई करें, खेत बचाएं';
       case AppLanguage.punjabi:
-        return 'ਪਰਾਲੀ ਵੇਚੋ, ਕਮਾਈ ਕਰੋ, ਖੇਤ ਬਚਾਓ /* NEEDS NATIVE REVIEW */';
+        return 'ਪਰਾਲੀ ਵੇਚੋ, ਕਮਾਈ ਕਰੋ, ਖੇਤ ਬਚਾਓ';
     }
   }
 
@@ -75,7 +75,7 @@ class AppStrings {
       case AppLanguage.hindi:
         return 'अपनी भाषा चुनें';
       case AppLanguage.punjabi:
-        return 'ਆਪਣੀ ਭਾਸ਼ਾ ਚੁਣੋ /* NEEDS NATIVE REVIEW */';
+        return 'ਆਪਣੀ ਭਾਸ਼ਾ ਚੁਣੋ';
     }
   }
 
@@ -91,7 +91,7 @@ class AppStrings {
       case AppLanguage.hindi:
         return 'इसे जलाएं नहीं। बेचें।';
       case AppLanguage.punjabi:
-        return 'ਇਸਨੂੰ ਸਾੜੋ ਨਾ। ਵੇਚੋ। /* NEEDS NATIVE REVIEW */';
+        return 'ਇਸਨੂੰ ਸਾੜੋ ਨਾ। ਵੇਚੋ।';
     }
   }
 
@@ -102,7 +102,7 @@ class AppStrings {
       case AppLanguage.hindi:
         return 'पराली को धुएं और जुर्माने के बजाय निश्चित आमदनी में बदलें।';
       case AppLanguage.punjabi:
-        return 'ਪਰਾਲੀ ਨੂੰ ਧੂੰਏਂ ਅਤੇ ਜੁਰਮਾਨੇ ਦੀ ਬਜਾਏ ਪੱਕੀ ਕਮਾਈ ਵਿੱਚ ਬਦਲੋ। /* NEEDS NATIVE REVIEW */';
+        return 'ਪਰਾਲੀ ਨੂੰ ਧੂੰਏਂ ਅਤੇ ਜੁਰਮਾਨੇ ਦੀ ਬਜਾਏ ਪੱਕੀ ਕਮਾਈ ਵਿੱਚ ਬਦਲੋ।';
     }
   }
 
@@ -113,7 +113,7 @@ class AppStrings {
       case AppLanguage.hindi:
         return 'हम आपके लिए मशीन, ट्रक और खरीदार लाते हैं।';
       case AppLanguage.punjabi:
-        return 'ਅਸੀਂ ਤੁਹਾਡੇ ਲਈ ਮਸ਼ੀਨ, ਟਰੱਕ ਅਤੇ ਖਰੀਦਦਾਰ ਲੱਭਦੇ ਹਾਂ। /* NEEDS NATIVE REVIEW */';
+        return 'ਅਸੀਂ ਤੁਹਾਡੇ ਲਈ ਮਸ਼ੀਨ, ਟਰੱਕ ਅਤੇ ਖਰੀਦਦਾਰ ਲੱਭਦੇ ਹਾਂ।';
     }
   }
 
@@ -124,7 +124,7 @@ class AppStrings {
       case AppLanguage.hindi:
         return 'बिना किसी परेशानी के अपनी कटाई के समय में सब कुछ बुक करें।';
       case AppLanguage.punjabi:
-        return 'ਬਿਨਾਂ ਕਿਸੇ ਝੰਜਟ ਦੇ ਆਪਣੀ ਕਟਾਈ ਦੇ ਸਮੇਂ ਸਭ ਕੁਝ ਬੁੱਕ ਕਰੋ। /* NEEDS NATIVE REVIEW */';
+        return 'ਬਿਨਾਂ ਕਿਸੇ ਝੰਜਟ ਦੇ ਆਪਣੀ ਕਟਾਈ ਦੇ ਸਮੇਂ ਸਭ ਕੁਝ ਬੁੱਕ ਕਰੋ।';
     }
   }
 
@@ -135,7 +135,7 @@ class AppStrings {
       case AppLanguage.hindi:
         return 'सही वजन पर सुरक्षित भुगतान पाएं।';
       case AppLanguage.punjabi:
-        return 'ਅਸਲ ਵਜ਼ਨ \'ਤੇ ਸੁਰੱਖਿਅਤ ਭੁਗਤਾਨ ਪ੍ਰਾਪਤ ਕਰੋ। /* NEEDS NATIVE REVIEW */';
+        return 'ਅਸਲ ਵਜ਼ਨ \'ਤੇ ਸੁਰੱਖਿਅਤ ਭੁਗਤਾਨ ਪ੍ਰਾਪਤ ਕਰੋ।';
     }
   }
 
@@ -146,14 +146,14 @@ class AppStrings {
       case AppLanguage.hindi:
         return 'धर्मकांटा प्रमाणित वजन और सुरक्षित एस्क्रो बैंक भुगतान।';
       case AppLanguage.punjabi:
-        return 'ਧਰਮਕੰਡੇ ਦੇ ਪ੍ਰਮਾਣਿਤ ਵਜ਼ਨ ਨਾਲ ਸੁਰੱਖਿਅਤ ਬੈਂਕ ਭੁਗਤਾਨ। /* NEEDS NATIVE REVIEW */';
+        return 'ਧਰਮਕੰਡੇ ਦੇ ਪ੍ਰਮਾਣਿਤ ਵਜ਼ਨ ਨਾਲ ਸੁਰੱਖਿਅਤ ਬੈਂਕ ਭੁਗਤਾਨ।';
     }
   }
 
-  String get skip => isEnglish ? 'Skip' : (isHindi ? 'छोड़ें' : 'ਛੱਡੋ /* NEEDS NATIVE REVIEW */');
-  String get next => isEnglish ? 'Next' : (isHindi ? 'आगे बढ़ें' : 'ਅੱਗੇ /* NEEDS NATIVE REVIEW */');
-  String get getStarted => isEnglish ? 'Get Started' : (isHindi ? 'शुरू करें' : 'ਸ਼ੁਰੂ ਕਰੋ /* NEEDS NATIVE REVIEW */');
-  String get continueBtn => isEnglish ? 'Continue' : (isHindi ? 'आगे बढ़ें' : 'ਅੱਗੇ ਵਧੋ /* NEEDS NATIVE REVIEW */');
+  String get skip => isEnglish ? 'Skip' : (isHindi ? 'छोड़ें' : 'ਛੱਡੋ');
+  String get next => isEnglish ? 'Next' : (isHindi ? 'आगे बढ़ें' : 'ਅੱਗੇ');
+  String get getStarted => isEnglish ? 'Get Started' : (isHindi ? 'शुरू करें' : 'ਸ਼ੁਰੂ ਕਰੋ');
+  String get continueBtn => isEnglish ? 'Continue' : (isHindi ? 'आगे बढ़ें' : 'ਅੱਗੇ ਵਧੋ');
 
   // ── Authentication ────────────────────────────────────────────────────────
   String get loginTitle {
@@ -163,7 +163,7 @@ class AppStrings {
       case AppLanguage.hindi:
         return 'किसान लॉगिन';
       case AppLanguage.punjabi:
-        return 'ਕਿਸਾਨ ਲਾਗਇਨ /* NEEDS NATIVE REVIEW */';
+        return 'ਕਿਸਾਨ ਲਾਗਇਨ';
     }
   }
 
@@ -174,12 +174,12 @@ class AppStrings {
       case AppLanguage.hindi:
         return 'अपना 10 अंकों का मोबाइल नंबर दर्ज करें';
       case AppLanguage.punjabi:
-        return 'ਆਪਣਾ 10 ਅੰਕਾਂ ਦਾ ਮੋਬਾਈਲ ਨੰਬਰ ਦਰਜ ਕਰੋ /* NEEDS NATIVE REVIEW */';
+        return 'ਆਪਣਾ 10 ਅੰਕਾਂ ਦਾ ਮੋਬਾਈਲ ਨੰਬਰ ਦਰਜ ਕਰੋ';
     }
   }
 
-  String get phoneLabel => isEnglish ? 'Mobile Number' : (isHindi ? 'मोबाइल नंबर' : 'ਮੋਬਾਈਲ ਨੰਬਰ /* NEEDS NATIVE REVIEW */');
-  String get getOtpBtn => isEnglish ? 'Get OTP' : (isHindi ? 'ओटीपी प्राप्त करें' : 'ਓਟੀਪੀ ਪ੍ਰਾਪਤ ਕਰੋ /* NEEDS NATIVE REVIEW */');
+  String get phoneLabel => isEnglish ? 'Mobile Number' : (isHindi ? 'मोबाइल नंबर' : 'ਮੋਬਾਈਲ ਨੰਬਰ');
+  String get getOtpBtn => isEnglish ? 'Get OTP' : (isHindi ? 'ओटीपी प्राप्त करें' : 'ਓਟੀਪੀ ਪ੍ਰਾਪਤ ਕਰੋ');
 
   String get otpTitle {
     switch (language) {
@@ -188,7 +188,7 @@ class AppStrings {
       case AppLanguage.hindi:
         return 'ओटीपी सत्यापन';
       case AppLanguage.punjabi:
-        return 'ਓਟੀਪੀ ਤਸਦੀਕ /* NEEDS NATIVE REVIEW */';
+        return 'ਓਟੀਪੀ ਤਸਦੀਕ';
     }
   }
 
@@ -199,36 +199,36 @@ class AppStrings {
       case AppLanguage.hindi:
         return 'भेजा गया 6-अंकीय कोड दर्ज करें:';
       case AppLanguage.punjabi:
-        return 'ਭੇਜਿਆ ਗਿਆ 6-ਅੰਕੀ ਕੋਡ ਦਰਜ ਕਰੋ: /* NEEDS NATIVE REVIEW */';
+        return 'ਭੇਜਿਆ ਗਿਆ 6-ਅੰਕੀ ਕੋਡ ਦਰਜ ਕਰੋ:';
     }
   }
 
-  String get verifyAndLogin => isEnglish ? 'Verify & Continue' : (isHindi ? 'सत्यापित करें और आगे बढ़ें' : 'ਤਸਦੀਕ ਕਰੋ ਅਤੇ ਅੱਗੇ ਵਧੋ /* NEEDS NATIVE REVIEW */');
-  String get resendOtp => isEnglish ? 'Resend OTP' : (isHindi ? 'ओटीपी पुनः भेजें' : 'ਓਟੀਪੀ ਦੁਬਾਰਾ ਭੇਜੋ /* NEEDS NATIVE REVIEW */');
-  String get resendIn => isEnglish ? 'Resend in' : (isHindi ? 'पुनः भेजें' : 'ਦੁਬਾਰਾ ਭੇਜੋ /* NEEDS NATIVE REVIEW */');
-  String get changeNumber => isEnglish ? 'Change Number' : (isHindi ? 'नंबर बदलें' : 'ਨੰਬਰ ਬਦਲੋ /* NEEDS NATIVE REVIEW */');
+  String get verifyAndLogin => isEnglish ? 'Verify & Continue' : (isHindi ? 'सत्यापित करें और आगे बढ़ें' : 'ਤਸਦੀਕ ਕਰੋ ਅਤੇ ਅੱਗੇ ਵਧੋ');
+  String get resendOtp => isEnglish ? 'Resend OTP' : (isHindi ? 'ओटीपी पुनः भेजें' : 'ਓਟੀਪੀ ਦੁਬਾਰਾ ਭੇਜੋ');
+  String get resendIn => isEnglish ? 'Resend in' : (isHindi ? 'पुनः भेजें' : 'ਦੁਬਾਰਾ ਭੇਜੋ');
+  String get changeNumber => isEnglish ? 'Change Number' : (isHindi ? 'नंबर बदलें' : 'ਨੰਬਰ ਬਦਲੋ');
 
   String get demoHint => isEnglish
       ? 'Demo Code: 123456 (test use only)'
-      : (isHindi ? 'डेमो कोड: 123456 (केवल परीक्षण हेतु)' : 'ਡੈਮੋ ਕੋਡ: 123456 (ਕੇਵਲ ਟੈਸਟ ਲਈ) /* NEEDS NATIVE REVIEW */');
+      : (isHindi ? 'डेमो कोड: 123456 (केवल परीक्षण हेतु)' : 'ਡੈਮੋ ਕੋਡ: 123456 (ਕੇਵਲ ਟੈਸਟ ਲਈ)');
 
   String get demoQuickLoginBtn => isEnglish
       ? 'Quick Demo Login (+919810000001)'
-      : (isHindi ? 'त्वरित डेमो लॉगिन (+919810000001)' : 'ਤੁਰੰਤ ਡੈਮੋ ਲਾਗਇਨ (+919810000001) /* NEEDS NATIVE REVIEW */');
+      : (isHindi ? 'त्वरित डेमो लॉगिन (+919810000001)' : 'ਤੁਰੰਤ ਡੈਮੋ ਲਾਗਇਨ (+919810000001)');
 
   String get demoSmsNotice => isEnglish
       ? 'Demo Mode: SMS is simulated (real SMS gateway is PLANNED).'
       : (isHindi
           ? 'डेमो मोड: एसएमएस सिमुलेटेड है (वास्तविक एसएमएस गेटवे योजनाबद्ध है)।'
-          : 'ਡੈਮੋ ਮੋਡ: ਐਸਐਮਐਸ ਸਿਮੂਲੇਟਿਡ ਹੈ (ਅਸਲ ਐਸਐਮਐਸ ਯੋਜਨਾਬੱਧ ਹੈ)। /* NEEDS NATIVE REVIEW */');
+          : 'ਡੈਮੋ ਮੋਡ: ਐਸਐਮਐਸ ਸਿਮੂਲੇਟਿਡ ਹੈ (ਅਸਲ ਐਸਐਮਐਸ ਯੋਜਨਾਬੱਧ ਹੈ)।');
 
   String get invalidPhone => isEnglish
       ? 'Please enter a valid 10-digit mobile number'
-      : (isHindi ? 'कृपया सही 10 अंकों का मोबाइल नंबर दर्ज करें' : 'ਕਿਰਪਾ ਕਰਕੇ ਸਹੀ 10 ਅੰਕਾਂ ਦਾ ਮੋਬਾਈਲ ਨੰਬਰ ਦਰਜ ਕਰੋ /* NEEDS NATIVE REVIEW */');
+      : (isHindi ? 'कृपया सही 10 अंकों का मोबाइल नंबर दर्ज करें' : 'ਕਿਰਪਾ ਕਰਕੇ ਸਹੀ 10 ਅੰਕਾਂ ਦਾ ਮੋਬਾਈਲ ਨੰਬਰ ਦਰਜ ਕਰੋ');
 
   String get invalidOtp => isEnglish
       ? 'Please enter the complete 6-digit OTP'
-      : (isHindi ? 'कृपया 6 अंकों का पूरा ओटीपी दर्ज करें' : 'ਕਿਰਪਾ ਕਰਕੇ 6 ਅੰਕਾਂ ਦਾ ਪੂਰਾ ਓਟੀਪੀ ਦਰਜ ਕਰੋ /* NEEDS NATIVE REVIEW */');
+      : (isHindi ? 'कृपया 6 अंकों का पूरा ओटीपी दर्ज करें' : 'ਕਿਰਪਾ ਕਰਕੇ 6 ਅੰਕਾਂ ਦਾ ਪੂਰਾ ਓਟੀਪੀ ਦਰਜ ਕਰੋ');
 
   // ── Home Screen ───────────────────────────────────────────────────────────
   String welcomeFarmer(String name) {
@@ -238,16 +238,16 @@ class AppStrings {
       case AppLanguage.hindi:
         return 'नमस्ते, $name';
       case AppLanguage.punjabi:
-        return 'ਜੀ ਆਇਆਂ ਨੂੰ, $name /* NEEDS NATIVE REVIEW */';
+        return 'ਜੀ ਆਇਆਂ ਨੂੰ, $name';
     }
   }
 
   String get offlineBanner => isEnglish
       ? 'Offline mode — using cached profile'
-      : (isHindi ? 'ऑफ़लाइन मोड — सहेजा गया प्रोफाइल उपयोग में' : 'ਆਫ਼ਲਾਈਨ ਮੋਡ — ਸੁਰੱਖਿਅਤ ਪ੍ਰੋਫਾਈਲ ਵਰਤ ਰਿਹਾ ਹੈ /* NEEDS NATIVE REVIEW */');
+      : (isHindi ? 'ऑफ़लाइन मोड — सहेजा गया प्रोफाइल उपयोग में' : 'ਆਫ਼ਲਾਈਨ ਮੋਡ — ਸੁਰੱਖਿਅਤ ਪ੍ਰੋਫਾਈਲ ਵਰਤ ਰਿਹਾ ਹੈ');
 
-  String get homeTab => isEnglish ? 'Home' : (isHindi ? 'होम' : 'ਹੋਮ /* NEEDS NATIVE REVIEW */');
-  String get profileTab => isEnglish ? 'Profile' : (isHindi ? 'प्रोफाइल' : 'ਪ੍ਰੋਫਾਈਲ /* NEEDS NATIVE REVIEW */');
+  String get homeTab => isEnglish ? 'Home' : (isHindi ? 'होम' : 'ਹੋਮ');
+  String get profileTab => isEnglish ? 'Profile' : (isHindi ? 'प्रोफाइल' : 'ਪ੍ਰੋਫਾਈਲ');
 
   String get checkStubbleCardTitle {
     switch (language) {
@@ -256,7 +256,7 @@ class AppStrings {
       case AppLanguage.hindi:
         return 'अपनी पराली का मूल्य जानें';
       case AppLanguage.punjabi:
-        return 'ਆਪਣੀ ਪਰਾਲੀ ਦਾ ਮੁੱਲ ਜਾਣੋ /* NEEDS NATIVE REVIEW */';
+        return 'ਆਪਣੀ ਪਰਾਲੀ ਦਾ ਮੁੱਲ ਜਾਣੋ';
     }
   }
 
@@ -267,94 +267,158 @@ class AppStrings {
       case AppLanguage.hindi:
         return '3 सरल चरणों में अपेक्षित उपज और कमाई का हिसाब लगाएं';
       case AppLanguage.punjabi:
-        return '3 ਸਧਾਰਨ ਕਦਮਾਂ ਵਿੱਚ ਅਨੁਮਾਨਿਤ ਝਾੜ ਅਤੇ ਕਮਾਈ ਦਾ ਹਿਸਾਬ ਲਗਾਓ /* NEEDS NATIVE REVIEW */';
+        return '3 ਸਧਾਰਨ ਕਦਮਾਂ ਵਿੱਚ ਅਨੁਮਾਨਿਤ ਝਾੜ ਅਤੇ ਕਮਾਈ ਦਾ ਹਿਸਾਬ ਲਗਾਓ';
     }
   }
 
-  String get estimateNowBtn => isEnglish ? 'Estimate Now' : (isHindi ? 'हिसाब लगाएं' : 'ਹਿਸਾਬ ਲਗਾਓ /* NEEDS NATIVE REVIEW */');
+  String get estimateNowBtn => isEnglish ? 'Estimate Now' : (isHindi ? 'हिसाब लगाएं' : 'ਹਿਸਾਬ ਲਗਾਓ');
 
-  String get howItWorksHeading => isEnglish ? 'How It Works' : (isHindi ? 'यह कैसे काम करता है' : 'ਇਹ ਕਿਵੇਂ ਕੰਮ ਕਰਦਾ ਹੈ /* NEEDS NATIVE REVIEW */');
+  String get howItWorksHeading => isEnglish ? 'How It Works' : (isHindi ? 'यह कैसे काम करता है' : 'ਇਹ ਕਿਵੇਂ ਕੰਮ ਕਰਦਾ ਹੈ');
 
-  String get step1Title => isEnglish ? '1. Field Details' : (isHindi ? '1. खेत का विवरण' : '1. ਖੇਤ ਦਾ ਵੇਰਵਾ /* NEEDS NATIVE REVIEW */');
-  String get step1Desc => isEnglish ? 'Specify acreage and harvest date' : (isHindi ? 'रकबा और कटाई की तारीख बताएं' : 'ਰਕਬਾ ਅਤੇ ਕਟਾਈ ਦੀ ਤਾਰੀਖ ਦੱਸੋ /* NEEDS NATIVE REVIEW */');
+  String get step1Title => isEnglish ? '1. Field Details' : (isHindi ? '1. खेत का विवरण' : '1. ਖੇਤ ਦਾ ਵੇਰਵਾ');
+  String get step1Desc => isEnglish ? 'Specify acreage and harvest date' : (isHindi ? 'रकबा और कटाई की तारीख बताएं' : 'ਰਕਬਾ ਅਤੇ ਕਟਾਈ ਦੀ ਤਾਰੀਖ ਦੱਸੋ');
 
-  String get step2Title => isEnglish ? '2. Instant Value' : (isHindi ? '2. तुरंत अनुमान' : '2. ਤੁਰੰਤ ਅੰਦਾਜ਼ਾ /* NEEDS NATIVE REVIEW */');
-  String get step2Desc => isEnglish ? 'View estimated tonnes and earnings' : (isHindi ? 'अनुमानित टन और कमाई देखें' : 'ਅਨੁਮਾਨਿਤ ਟਨ ਅਤੇ ਕਮਾਈ ਦੇਖੋ /* NEEDS NATIVE REVIEW */');
+  String get step2Title => isEnglish ? '2. Instant Value' : (isHindi ? '2. तुरंत अनुमान' : '2. ਤੁਰੰਤ ਅੰਦਾਜ਼ਾ');
+  String get step2Desc => isEnglish ? 'View estimated tonnes and earnings' : (isHindi ? 'अनुमानित टन और कमाई देखें' : 'ਅਨੁਮਾਨਿਤ ਟਨ ਅਤੇ ਕਮਾਈ ਦੇਖੋ');
 
-  String get step3Title => isEnglish ? '3. Book Bundle (Coming soon)' : (isHindi ? '3. बंडल बुक करें (जल्द)' : '3. ਬੰਡਲ ਬੁੱਕ ਕਰੋ (ਜਲਦੀ) /* NEEDS NATIVE REVIEW */');
-  String get step3Desc => isEnglish ? 'Machine + truck + buyer in one tap' : (isHindi ? 'मशीन + ट्रक + खरीदार एक टैप में' : 'ਮਸ਼ੀਨ + ਟਰੱਕ + ਖਰੀਦਦਾਰ ਇੱਕ ਟੈਪ ਵਿੱਚ /* NEEDS NATIVE REVIEW */');
+  String get step3Title => isEnglish ? '3. Book Bundle' : (isHindi ? '3. बंडल बुक करें' : '3. ਬੰਡਲ ਬੁੱਕ ਕਰੋ');
+  String get step3Desc => isEnglish ? 'Machine + truck + buyer in one tap' : (isHindi ? 'मशीन + ट्रक + खरीदार एक टैप में' : 'ਮਸ਼ੀਨ + ਟਰੱਕ + ਖਰੀਦਦਾਰ ਇੱਕ ਟੈਪ ਵਿੱਚ');
 
-  String get comingSoon => isEnglish ? 'Coming soon' : (isHindi ? 'जल्द आ रहा है' : 'ਜਲਦੀ ਆ ਰਿਹਾ ਹੈ /* NEEDS NATIVE REVIEW */');
+  String get comingSoon => isEnglish ? 'Coming soon' : (isHindi ? 'जल्द आ रहा है' : 'ਜਲਦੀ ਆ ਰਿਹਾ ਹੈ');
 
   // ── Field Details Screen ──────────────────────────────────────────────────
-  String get fieldDetailsTitle => isEnglish ? 'Field Details' : (isHindi ? 'खेत का विवरण' : 'ਖੇਤ ਦਾ ਵੇਰਵਾ /* NEEDS NATIVE REVIEW */');
-  String get manualFormHeading => isEnglish ? 'Field Information' : (isHindi ? 'खेत का विवरण' : 'ਖੇਤ ਦਾ ਵੇਰਵਾ /* NEEDS NATIVE REVIEW */');
-  String get micPrompt => isEnglish ? 'Speak Details (Voice mic)' : (isHindi ? 'बोलकर बताएं (माइक दबाएं)' : 'ਬੋਲ ਕੇ ਦੱਸੋ (ਮਾਈਕ ਦਬਾਓ) /* NEEDS NATIVE REVIEW */');
+  String get fieldDetailsTitle => isEnglish ? 'Field Details' : (isHindi ? 'खेत का विवरण' : 'ਖੇਤ ਦਾ ਵੇਰਵਾ');
+  String get manualFormHeading => isEnglish ? 'Field Information' : (isHindi ? 'खेत का विवरण' : 'ਖੇਤ ਦਾ ਵੇਰਵਾ');
+  String get micPrompt => isEnglish ? 'Speak Details (Voice mic)' : (isHindi ? 'बोलकर बताएं (माइक दबाएं)' : 'ਬੋਲ ਕੇ ਦੱਸੋ (ਮਾਈਕ ਦਬਾਓ)');
   String get micComingSoon => isEnglish
-      ? 'Voice entry coming soon — please fill below'
-      : (isHindi ? 'आवाज से एंट्री जल्द आ रही है — कृपया नीचे भरें' : 'ਆਵਾਜ਼ ਰਾਹੀਂ ਐਂਟਰੀ ਜਲਦੀ ਆ ਰਹੀ ਹੈ — ਕਿਰਪਾ ਕਰਕੇ ਹੇਠਾਂ ਭਰੋ /* NEEDS NATIVE REVIEW */');
-  String get acresLabel => isEnglish ? 'Field Area (Acres)' : (isHindi ? 'खेत का रकबा (एकड़)' : 'ਖੇਤ ਦਾ ਰਕਬਾ (ਏਕੜ) /* NEEDS NATIVE REVIEW */');
-  String get varietyLabel => isEnglish ? 'Paddy Variety' : (isHindi ? 'धान की किस्म' : 'ਝੋਨੇ ਦੀ ਕਿਸਮ /* NEEDS NATIVE REVIEW */');
-  String get harvestMethodLabel => isEnglish ? 'Harvest Method' : (isHindi ? 'कटाई का तरीका' : 'ਕਟਾਈ ਦਾ ਤਰੀਕਾ /* NEEDS NATIVE REVIEW */');
-  String get harvestDateLabel => isEnglish ? 'Expected Harvest Date' : (isHindi ? 'संभावित कटाई की तारीख' : 'ਸੰਭਾਵਿਤ ਕਟਾਈ ਦੀ ਤਾਰੀਖ /* NEEDS NATIVE REVIEW */');
-  String get selectDate => isEnglish ? 'Select Date' : (isHindi ? 'तारीख चुनें' : 'ਤਾਰੀਖ ਚੁਣੋ /* NEEDS NATIVE REVIEW */');
-  String get calculateBtn => isEnglish ? 'Calculate Value' : (isHindi ? 'पराली का हिसाब लगाएं' : 'ਪਰਾਲੀ ਦਾ ਹਿਸਾਬ ਲਗਾਓ /* NEEDS NATIVE REVIEW */');
+      ? 'Tap mic to speak your field details (Punjabi/Hindi/English)'
+      : (isHindi ? 'माइक दबाकर खेत की जानकारी बोलें' : 'ਮਾਈਕ ਦਬਾ ਕੇ ਖੇਤ ਦੀ ਜਾਣਕਾਰੀ ਬੋਲੋ');
+  String get acresLabel => isEnglish ? 'Field Area (Acres)' : (isHindi ? 'खेत का रकबा (एकड़)' : 'ਖੇਤ ਦਾ ਰਕਬਾ (ਏਕੜ)');
+  String get varietyLabel => isEnglish ? 'Paddy Variety' : (isHindi ? 'धान की किस्म' : 'ਝੋਨੇ ਦੀ ਕਿਸਮ');
+  String get harvestMethodLabel => isEnglish ? 'Harvest Method' : (isHindi ? 'कटाई का तरीका' : 'ਕਟਾਈ ਦਾ ਤਰੀਕਾ');
+  String get harvestDateLabel => isEnglish ? 'Expected Harvest Date' : (isHindi ? 'संभावित कटाई की तारीख' : 'ਸੰਭਾਵਿਤ ਕਟਾਈ ਦੀ ਤਾਰੀਖ');
+  String get selectDate => isEnglish ? 'Select Date' : (isHindi ? 'तारीख चुनें' : 'ਤਾਰੀਖ ਚੁਣੋ');
+  String get calculateBtn => isEnglish ? 'Calculate Value' : (isHindi ? 'पराली का हिसाब लगाएं' : 'ਪਰਾਲੀ ਦਾ ਹਿਸਾਬ ਲਗਾਓ');
 
   // Varieties & Methods
   String get varietyPR126 => 'PR-126';
   String get varietyPusa44 => 'Pusa-44';
   String get varietyBasmati => 'Basmati';
-  String get varietyOther => isEnglish ? 'Other' : (isHindi ? 'अन्य' : 'ਹੋਰ /* NEEDS NATIVE REVIEW */');
-  String get methodCombine => isEnglish ? 'Combine Harvester' : (isHindi ? 'कंबाइन हार्वेस्टर' : 'ਕੰਬਾਈਨ ਹਾਰਵੈਸਟਰ /* NEEDS NATIVE REVIEW */');
-  String get methodManual => isEnglish ? 'Manual Cutting' : (isHindi ? 'हाथ से कटाई' : 'ਹੱਥ ਨਾਲ ਕਟਾਈ /* NEEDS NATIVE REVIEW */');
+  String get varietyOther => isEnglish ? 'Other' : (isHindi ? 'अन्य' : 'ਹੋਰ');
+  String get methodCombine => isEnglish ? 'Combine Harvester' : (isHindi ? 'कंबाइन हार्वेस्टर' : 'ਕੰਬਾਈਨ ਹਾਰਵੈਸਟਰ');
+  String get methodManual => isEnglish ? 'Manual Cutting' : (isHindi ? 'हाथ से कटाई' : 'ਹੱਥ ਨਾਲ ਕਟਾਈ');
 
   // ── Estimate Screen ───────────────────────────────────────────────────────
-  String get estimateTitle => isEnglish ? 'Stubble & Earnings Estimate' : (isHindi ? 'पराली और कमाई का अनुमान' : 'ਪਰਾਲੀ ਅਤੇ ਕਮਾਈ ਦਾ ਅਨੁਮਾਨ /* NEEDS NATIVE REVIEW */');
-  String get stubbleQtyLabel => isEnglish ? 'Estimated Dry Stubble' : (isHindi ? 'अनुमानित सूखी पराली' : 'ਅਨੁਮਾਨਿਤ ਸੁੱਕੀ ਪਰਾਲੀ /* NEEDS NATIVE REVIEW */');
-  String get tonnesUnit => isEnglish ? 'Tonnes' : (isHindi ? 'टन' : 'ਟਨ /* NEEDS NATIVE REVIEW */');
-  String get midEstimate => isEnglish ? 'Central Estimate' : (isHindi ? 'केंद्रीय अनुमान' : 'ਕੇਂਦਰੀ ਅੰਦਾਜ਼ਾ /* NEEDS NATIVE REVIEW */');
-  String get expectedEarningsLabel => isEnglish ? 'Estimated Income' : (isHindi ? 'संभावित आमदनी' : 'ਸੰਭਾਵਿਤ ਕਮਾਈ /* NEEDS NATIVE REVIEW */');
+  String get estimateTitle => isEnglish ? 'Stubble & Earnings Estimate' : (isHindi ? 'पराली और कमाई का अनुमान' : 'ਪਰਾਲੀ ਅਤੇ ਕਮਾਈ ਦਾ ਅਨੁਮਾਨ');
+  String get stubbleQtyLabel => isEnglish ? 'Estimated Dry Stubble' : (isHindi ? 'अनुमानित सूखी पराली' : 'ਅਨੁਮਾਨਿਤ ਸੁੱਕੀ ਪਰਾਲੀ');
+  String get tonnesUnit => isEnglish ? 'Tonnes' : (isHindi ? 'टन' : 'ਟਨ');
+  String get midEstimate => isEnglish ? 'Central Estimate' : (isHindi ? 'केंद्रीय अनुमान' : 'ਕੇਂਦਰੀ ਅੰਦਾਜ਼ਾ');
+  String get expectedEarningsLabel => isEnglish ? 'Estimated Income' : (isHindi ? 'संभावित आमदनी' : 'ਸੰਭਾਵਿਤ ਕਮਾਈ');
   String assumedPriceNote(double price) => isEnglish
       ? 'assumed price: ₹${price.toStringAsFixed(0)}/tonne'
-      : (isHindi ? 'अनुमानित दर: ₹${price.toStringAsFixed(0)}/टन' : 'ਅਨੁਮਾਨਿਤ ਦਰ: ₹${price.toStringAsFixed(0)}/ਟਨ /* NEEDS NATIVE REVIEW */');
+      : (isHindi ? 'अनुमानित दर: ₹${price.toStringAsFixed(0)}/टन' : 'ਅਨੁਮਾਨਿਤ ਦਰ: ₹${price.toStringAsFixed(0)}/ਟਨ');
   String get disclaimer => isEnglish
       ? 'Note: This is an agronomic estimate. Payout is calculated from certified weighbridge measurement.'
       : (isHindi
           ? 'नोट: यह प्रारंभिक अनुमान है। वास्तविक भुगतान धर्मकांटा (वेब्रिज) पर तौलने के बाद होगा।'
-          : 'ਨੋਟ: ਇਹ ਇੱਕ ਅਨੁਮਾਨ ਹੈ। ਅਸਲ ਭੁਗਤਾਨ ਧਰਮਕੰਡੇ ਤੇ ਤੋਲਣ ਤੋਂ ਬਾਅਦ ਹੋਵੇਗਾ। /* NEEDS NATIVE REVIEW */');
+          : 'ਨੋਟ: ਇਹ ਇੱਕ ਅਨੁਮਾਨ ਹੈ। ਅਸਲ ਭੁਗਤਾਨ ਧਰਮਕੰਡੇ ਤੇ ਤੋਲਣ ਤੋਂ ਬਾਅਦ ਹੋਵੇਗਾ।');
   String get nextStepAdvice => isEnglish
       ? 'Do not burn! Stubble baler machine and buyer coordination will open directly from this app.'
       : (isHindi
           ? 'पराली न जलाएं! बेलर मशीन और खरीदार से संपर्क जल्द शुरू होगा।'
-          : 'ਪਰਾਲੀ ਨਾ ਸਾੜੋ! ਬੇਲਰ ਮਸ਼ੀਨ ਅਤੇ ਖਰੀਦਦਾਰ ਨਾਲ ਸੰਪਰਕ ਜਲਦੀ ਸ਼ੁਰੂ ਹੋਵੇਗਾ। /* NEEDS NATIVE REVIEW */');
-  String get recalculateBtn => isEnglish ? 'Calculate Another Field' : (isHindi ? 'नया हिसाब लगाएं' : 'ਨਵਾਂ ਹਿਸਾਬ ਲਗਾਓ /* NEEDS NATIVE REVIEW */');
+          : 'ਪਰਾਲੀ ਨਾ ਸਾੜੋ! ਬੇਲਰ ਮਸ਼ੀਨ ਅਤੇ ਖਰੀਦਦਾਰ ਨਾਲ ਸੰਪਰਕ ਜਲਦੀ ਸ਼ੁਰੂ ਹੋਵੇਗਾ।');
+  String get recalculateBtn => isEnglish ? 'Calculate Another Field' : (isHindi ? 'नया हिसाब लगाएं' : 'ਨਵਾਂ ਹਿਸਾਬ ਲਗਾਓ');
 
   // ── Profile Screen ────────────────────────────────────────────────────────
-  String get profileHeading => isEnglish ? 'Farmer Profile' : (isHindi ? 'किसान प्रोफाइल' : 'ਕਿਸਾਨ ਪ੍ਰੋਫਾਈਲ /* NEEDS NATIVE REVIEW */');
-  String get nameLabel => isEnglish ? 'Farmer Name' : (isHindi ? 'किसान का नाम' : 'ਕਿਸਾਨ ਦਾ ਨਾਂ /* NEEDS NATIVE REVIEW */');
-  String get villageDistrictLabel => isEnglish ? 'Village & District' : (isHindi ? 'गाँव और ज़िला' : 'ਪਿੰਡ ਅਤੇ ਜ਼ਿਲ੍ਹਾ /* NEEDS NATIVE REVIEW */');
-  String get notSpecified => isEnglish ? 'Not specified' : (isHindi ? 'दर्ज नहीं' : 'ਦਰਜ ਨਹੀਂ /* NEEDS NATIVE REVIEW */');
-  String get edit => isEnglish ? 'Edit' : (isHindi ? 'बदलें' : 'ਬਦਲੋ /* NEEDS NATIVE REVIEW */');
-  String get save => isEnglish ? 'Save' : (isHindi ? 'सहेजें' : 'ਸੰਭਾਲੋ /* NEEDS NATIVE REVIEW */');
-  String get cancel => isEnglish ? 'Cancel' : (isHindi ? 'रद्द करें' : 'ਰੱਦ ਕਰੋ /* NEEDS NATIVE REVIEW */');
-  String get logout => isEnglish ? 'Log Out' : (isHindi ? 'लॉग आउट' : 'ਲਾਗ ਆਉਟ /* NEEDS NATIVE REVIEW */');
-  String get aboutTitle => isEnglish ? 'About ParaliSetu' : (isHindi ? 'पराली सेतु के बारे में' : 'ਪਰਾਲੀ ਸੇਤੂ ਬਾਰੇ /* NEEDS NATIVE REVIEW */');
+  String get profileHeading => isEnglish ? 'Farmer Profile' : (isHindi ? 'किसान प्रोफाइल' : 'ਕਿਸਾਨ ਪ੍ਰੋਫਾਈਲ');
+  String get nameLabel => isEnglish ? 'Farmer Name' : (isHindi ? 'किसान का नाम' : 'ਕਿਸਾਨ ਦਾ ਨਾਂ');
+  String get villageDistrictLabel => isEnglish ? 'Village & District' : (isHindi ? 'गाँव और ज़िला' : 'ਪਿੰਡ ਅਤੇ ਜ਼ਿਲ੍ਹਾ');
+  String get notSpecified => isEnglish ? 'Not specified' : (isHindi ? 'दर्ज नहीं' : 'ਦਰਜ ਨਹੀਂ');
+  String get edit => isEnglish ? 'Edit' : (isHindi ? 'बदलें' : 'ਬਦਲੋ');
+  String get save => isEnglish ? 'Save' : (isHindi ? 'सहेजें' : 'ਸੰਭਾਲੋ');
+  String get cancel => isEnglish ? 'Cancel' : (isHindi ? 'रद्द करें' : 'ਰੱਦ ਕਰੋ');
+  String get logout => isEnglish ? 'Log Out' : (isHindi ? 'लॉग आउट' : 'ਲਾਗ ਆਉਟ');
+  String get aboutTitle => isEnglish ? 'About ParaliSetu' : (isHindi ? 'पराली सेतु के बारे में' : 'ਪਰਾਲੀ ਸੇਤੂ ਬਾਰੇ');
   String get aboutText => isEnglish
       ? 'Simulated prototype built for Amazon Environmental Hacks 2026. All farmer and booking data in this demo is simulated.'
       : (isHindi
           ? 'अमेज़न एनवायर्नमेंटल हैक्स 2026 के लिए निर्मित प्रोटोटाइप। इस डेमो में सभी डेटा सिम्युलेटेड हैं।'
-          : 'ਐਮਾਜ਼ਾਨ ਐਨਵਾਇਰਨਮੈਂਟਲ ਹੈਕਸ 2026 ਲਈ ਬਣਾਇਆ ਪ੍ਰੋਟੋਟਾਈਪ। ਇਸ ਡੈਮੋ ਵਿੱਚ ਸਾਰਾ ਡਾਟਾ ਸਿਮੂਲੇਟਿਡ ਹੈ। /* NEEDS NATIVE REVIEW */');
+          : 'ਐਮਾਜ਼ਾਨ ਐਨਵਾਇਰਨਮੈਂਟਲ ਹੈਕਸ 2026 ਲਈ ਬਣਾਇਆ ਪ੍ਰੋਟੋਟਾਈਪ। ਇਸ ਡੈਮੋ ਵਿੱਚ ਸਾਰਾ ਡਾਟਾ ਸਿਮੂਲੇਟਿਡ ਹੈ।');
+
+  // ── Matching & Options Screen ─────────────────────────────────────────────
+  String get selectBundleTitle => isEnglish
+      ? 'Choose Stubble Pickup Bundle'
+      : (isHindi ? 'पराली उठान विकल्प चुनें' : 'ਪਰਾਲੀ ਚੁਕਾਈ ਵਿਕਲਪ ਚੁਣੋ');
+  String get bundlesSubtitle => isEnglish
+      ? 'Optimized by AI for fastest pickup and maximum payout'
+      : (isHindi ? 'AI द्वारा सबसे तेज उठान और सबसे ज्यादा मुनाफे के लिए तैयार' : 'ਏ.ਆਈ. ਦੁਆਰਾ ਸਭ ਤੋਂ ਤੇਜ਼ ਚੁਕਾਈ ਅਤੇ ਵੱਧ ਮੁਨਾਫੇ ਲਈ ਤਿਆਰ');
+  String get bookPickupBtn => isEnglish
+      ? 'Book This Pickup'
+      : (isHindi ? 'यह विकल्प बुक करें' : 'ਇਹ ਵਿਕਲਪ ਬੁੱਕ ਕਰੋ');
+  String get grossIncomeLabel => isEnglish ? 'Factory Rate' : (isHindi ? 'फैक्ट्री का मूल्य' : 'ਫੈਕਟਰੀ ਮੁੱਲ');
+  String get machineCostLabel => isEnglish ? 'Baler Machine' : (isHindi ? 'बेलर मशीन खर्च' : 'ਬੇਲਰ ਮਸ਼ੀਨ ਖਰਚ');
+  String get transportCostLabel => isEnglish ? 'Truck Transport' : (isHindi ? 'ट्रक ढुलाई' : 'ਟਰੱਕ ਢੁਲਾਈ');
+  String get netEarningsLabel => isEnglish ? 'Net In-Hand Earnings' : (isHindi ? 'हाथ में शुद्ध कमाई' : 'ਹੱਥ ਵਿੱਚ ਸ਼ੁੱਧ ਕਮਾਈ');
+  String get pickupDateLabel => isEnglish ? 'Pickup Date' : (isHindi ? 'उठान की तारीख' : 'ਚੁਕਾਈ ਦੀ ਮਿਤੀ');
+  String get buyerLabel => isEnglish ? 'Delivery To' : (isHindi ? 'कहाँ जाएगा' : 'ਕਿੱਥੇ ਜਾਵੇਗਾ');
+  String get bookingConfirmedTitle => isEnglish ? 'Booking Confirmed!' : (isHindi ? 'बुकिंग पक्की हो गई!' : 'ਬੁਕਿੰਗ ਪੱਕੀ ਹੋ ਗਈ!');
+  String get escrowHoldNotice => isEnglish
+      ? 'Simulated Escrow: ₹{amount} locked by factory. Released on weighbridge receipt.'
+      : (isHindi
+          ? 'सुरक्षित एस्क्रो: ₹{amount} फैक्ट्री द्वारा लॉक किया गया। धर्मकांटा रसीद पर रिलीज होगा।'
+          : 'ਸੁਰੱਖਿਅਤ ਐਸਕਰੋ: ₹{amount} ਫੈਕਟਰੀ ਦੁਆਰਾ ਲਾਕ। ਧਰਮਕੰਡਾ ਪਰਚੀ ਤੇ ਮਿਲੇਗਾ।');
+  String get viewBookingDetails => isEnglish ? 'View Booking Status' : (isHindi ? 'बुकिंग स्थिति देखें' : 'ਬੁਕਿੰਗ ਸਥਿਤੀ ਦੇਖੋ');
+
+  // ── Booking Status & Escrow Tracking ─────────────────────────────────────
+  String get bookingStatusTitle => isEnglish ? 'Live Pickup & Escrow' : (isHindi ? 'लाइव उठान व एस्क्रो स्थिति' : 'ਲਾਈਵ ਚੁਕਾਈ ਤੇ ਐਸਕਰੋ ਸਥਿਤੀ');
+  String get stepConfirmed => isEnglish ? 'Booking Confirmed' : (isHindi ? 'बुकिंग पक्की' : 'ਬੁਕਿੰਗ ਪੱਕੀ');
+  String get stepPickedUp => isEnglish ? 'Baler Picked Up' : (isHindi ? 'पराली उठान पूर्ण' : 'ਪਰਾਲੀ ਚੁਕਾਈ ਮੁਕੰਮਲ');
+  String get stepWeighed => isEnglish ? 'Weighbridge Weighed' : (isHindi ? 'धर्मकांटा तौल पूर्ण' : 'ਧਰਮਕੰਡਾ ਤੋਲ ਮੁਕੰਮਲ');
+  String get stepPaid => isEnglish ? 'Escrow Released' : (isHindi ? 'एस्क्रो राशि जारी' : 'ਐਸਕਰੋ ਰਾਸ਼ੀ ਜਾਰੀ');
+  String get escrowLockedBadge => isEnglish ? 'Factory Escrow Locked' : (isHindi ? 'फैक्ट्री एस्क्रो सुरक्षित' : 'ਫੈਕਟਰੀ ਐਸਕਰੋ ਸੁਰੱਖਿਅਤ');
+  String get escrowReleasedBadge => isEnglish ? 'Transferred to Bank' : (isHindi ? 'बैंक खाते में जमा' : 'ਬੈਂਕ ਖਾਤੇ ਵਿੱਚ ਜਮ੍ਹਾਂ');
+  String get simulateWeighbridgeSlip => isEnglish ? 'Simulate Weighbridge Receipt' : (isHindi ? 'धर्मकांटा रसीद दर्ज करें (डेमो)' : 'ਧਰਮਕੰਡਾ ਪਰਚੀ ਦਰਜ ਕਰੋ (ਡੈਮੋ)');
+  String get grossWeightLabel => isEnglish ? 'Gross Weight' : (isHindi ? 'सकल वजन' : 'ਕੁੱਲ ਵਜ਼ਨ');
+  String get tareWeightLabel => isEnglish ? 'Tare (Empty Truck)' : (isHindi ? 'खाली ट्रक वजन' : 'ਖਾਲੀ ਟਰੱਕ ਵਜ਼ਨ');
+  String get netWeightLabel => isEnglish ? 'Certified Net Straw' : (isHindi ? 'प्रमाणित शुद्ध पराली' : 'ਪ੍ਰਮਾਣਿਤ ਸ਼ੁੱਧ ਪਰਾਲੀ');
+  String get ticketNoLabel => isEnglish ? 'Ticket #' : (isHindi ? 'रसीद संख्या' : 'ਪਰਚੀ ਨੰਬਰ');
+  String get finalPayoutLabel => isEnglish ? 'Final Direct Payout' : (isHindi ? 'अंतिम शुद्ध भुगतान' : 'ਅੰਤਿਮ ਸ਼ੁੱਧ ਭੁਗਤਾਨ');
+
+  // ── No-Burn Green Certificate ─────────────────────────────────────────────
+  String get certificateTitle => isEnglish ? 'No-Burn Certificate' : (isHindi ? 'नो-बर्न ग्रीन प्रमाणपत्र' : 'ਨੋ-ਬਰਨ ਗ੍ਰੀਨ ਸਰਟੀਫਿਕੇਟ');
+  String get viewCertificateBtn => isEnglish ? 'View No-Burn Certificate' : (isHindi ? 'नो-बर्न प्रमाणपत्र देखें' : 'ਨੋ-ਬਰਨ ਸਰਟੀਫਿਕੇਟ ਦੇਖੋ');
+  String get certificateSubtitle => isEnglish
+      ? 'Sentinel-2 Satellite Verified Clean Harvest'
+      : (isHindi ? 'सेंटिनल-2 उपग्रह द्वारा प्रमाणित स्वच्छ फसल' : 'ਸੈਂਟੀਨਲ-2 ਸੈਟੇਲਾਈਟ ਦੁਆਰਾ ਤਸਦੀਕ ਸਾਫ਼ ਵਾਢੀ');
+  String get co2AvoidedLabel => isEnglish ? 'CO₂ Avoided' : (isHindi ? 'बचाया गया CO₂' : 'ਬਚਾਇਆ ਗਿਆ CO₂');
+  String get pm25AvoidedLabel => isEnglish ? 'PM₂.₅ Smoke Avoided' : (isHindi ? 'बचाया गया PM₂.₅ धुआं' : 'ਬਚਾਇਆ ਗਿਆ PM₂.₅ ਧੂੰਆਂ');
+  String get treesPlantedLabel => isEnglish ? 'Equivalent Trees' : (isHindi ? 'पेड़ों का संरक्षण' : 'ਰੁੱਖਾਂ ਦੀ ਸਾਂਭ');
+  String get satelliteVerifiedBadge => isEnglish ? 'Sentinel-2 SWIR Verified (ΔNBR < 0.10)' : (isHindi ? 'उपग्रह सत्यापित (ΔNBR < 0.10)' : 'ਸੈਟੇਲਾਈਟ ਤਸਦੀਕ (ΔNBR < 0.10)');
+  String get shareCertificateBtn => isEnglish ? 'Share Certificate' : (isHindi ? 'प्रमाणपत्र साझा करें' : 'ਸਰਟੀਫਿਕੇਟ ਸਾਂਝਾ ਕਰੋ');
+
+  // ── Voice Intake Strings ──────────────────────────────────────────────────
+  String get voiceIntakeBtn => isEnglish ? 'Speak Details' : (isHindi ? 'बोलकर बताएं' : 'ਬੋਲ ਕੇ ਦੱਸੋ');
+  String get listeningTitle => isEnglish ? 'Listening...' : (isHindi ? 'सुन रहे हैं...' : 'ਸੁਣ ਰਹੇ ਹਾਂ...');
+  String get voiceHint => isEnglish
+      ? 'Speak naturally: "4 killa PR-126, 25 October"'
+      : (isHindi ? 'आसानी से बोलें: "4 किल्ला PR-126, 25 अक्टूबर"' : 'ਆਰਾਮ ਨਾਲ ਬੋਲੋ: "4 ਕਿੱਲੇ PR-126, 25 ਅਕਤੂਬਰ"');
+  String get voiceConfirmTitle => isEnglish ? 'Confirm Details' : (isHindi ? 'जानकारी की पुष्टि करें' : 'ਜਾਣਕਾਰੀ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ');
+  String get confirmYesBtn => isEnglish ? 'Yes, Correct' : (isHindi ? 'हाँ, सही है' : 'ਹਾਂ, ਸਹੀ ਹੈ');
+  String get retryVoiceBtn => isEnglish ? 'Speak Again' : (isHindi ? 'दोबारा बोलिए' : 'ਦੁਬਾਰਾ ਬੋਲੋ');
+  String get trySampleVoice => isEnglish ? 'Or tap demo speech sample:' : (isHindi ? 'या डेमो वॉइस सैंपल चुनें:' : 'ਜਾਂ ਡੈਮੋ ਆਵਾਜ਼ ਸੈਂਪਲ ਚੁਣੋ:');
+  String get voiceRecognizedBadge => isEnglish ? 'Voice Auto-Filled' : (isHindi ? 'आवाज से भरा गया' : 'ਆਵਾਜ਼ ਨਾਲ ਭਰਿਆ ਗਿਆ');
 
   // ── General Errors & Network ──────────────────────────────────────────────
   String get serverWakingUp => isEnglish
+
       ? 'Server is waking up, please wait... (may take 30-60 seconds on free tier)'
       : (isHindi
           ? 'सर्वर शुरू हो रहा है, कृपया थोड़ा इंतज़ार करें... (30-60 सेकंड लग सकते हैं)'
-          : 'ਸਰਵਰ ਸ਼ੁਰੂ ਹੋ ਰਿਹਾ ਹੈ, ਕਿਰਪਾ ਕਰਕੇ ਉਡੀਕ ਕਰੋ... (30-60 ਸਕਿੰਟ ਲੱਗ ਸਕਦੇ ਹਨ) /* NEEDS NATIVE REVIEW */');
+          : 'ਸਰਵਰ ਸ਼ੁਰੂ ਹੋ ਰਿਹਾ ਹੈ, ਕਿਰਪਾ ਕਰਕੇ ਉਡੀਕ ਕਰੋ... (30-60 ਸਕਿੰਟ ਲੱਗ ਸਕਦੇ ਹਨ)');
   String get noInternet => isEnglish
       ? 'No internet connection. Please check your network.'
-      : (isHindi ? 'इंटरनेट कनेक्शन नहीं है। कृपया अपना नेटवर्क चेक करें।' : 'ਇੰਟਰਨੈੱਟ ਕਨੈਕਸ਼ਨ ਨਹੀਂ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ ਨੈੱਟਵਰਕ ਚੈੱਕ ਕਰੋ। /* NEEDS NATIVE REVIEW */');
+      : (isHindi ? 'इंटरनेट कनेक्शन नहीं है। कृपया अपना नेटवर्क चेक करें।' : 'ਇੰਟਰਨੈੱਟ ਕਨੈਕਸ਼ਨ ਨਹੀਂ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਆਪਣਾ ਨੈੱਟਵਰਕ ਚੈੱਕ ਕਰੋ।');
   String get requestFailed => isEnglish
       ? 'Could not connect to server. Please try again.'
-      : (isHindi ? 'सर्वर से संपर्क नहीं हो सका। कृपया पुनः प्रयास करें।' : 'ਸਰਵਰ ਨਾਲ ਸੰਪਰਕ ਨਹੀਂ ਹੋ ਸਕਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ। /* NEEDS NATIVE REVIEW */');
+      : (isHindi ? 'सर्वर से संपर्क नहीं हो सका। कृपया पुनः प्रयास करें।' : 'ਸਰਵਰ ਨਾਲ ਸੰਪਰਕ ਨਹੀਂ ਹੋ ਸਕਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।');
 }

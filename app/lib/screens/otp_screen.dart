@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../l10n/app_strings.dart';
@@ -300,29 +299,112 @@ class _OtpScreenState extends State<OtpScreen> {
 
               const SizedBox(height: 32),
 
-              // Debug-only hint
-              if (kDebugMode)
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.amber.shade50,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.amber.shade300),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.info_outline, color: Colors.orange, size: 20),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          strings.demoHint,
-                          style: const TextStyle(fontSize: 13, color: Colors.brown),
-                        ),
-                      ),
-                    ],
+              // Dynamic status / OTP helper card
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: widget.repository.lastGatewayStatus == 'delivered'
+                      ? const Color(0xFFF1F8E9)
+                      : Colors.amber.shade50,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: widget.repository.lastGatewayStatus == 'delivered'
+                        ? const Color(0xFF81C784)
+                        : Colors.amber.shade400,
                   ),
                 ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      widget.repository.lastGatewayStatus == 'delivered'
+                          ? Icons.check_circle_outline
+                          : Icons.info_outline,
+                      color: widget.repository.lastGatewayStatus == 'delivered'
+                          ? AppTheme.primaryGreen
+                          : Colors.orange.shade800,
+                      size: 22,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.repository.lastGatewayStatus == 'delivered'
+                                ? (widget.currentLanguage == AppLanguage.hindi
+                                    ? 'एसएमएस ओटीपी आपके फोन पर भेजा गया है।'
+                                    : widget.currentLanguage == AppLanguage.punjabi
+                                        ? 'SMS OTP ਤੁਹਾਡੇ ਫ਼ੋਨ ਤੇ ਭੇਜਿਆ ਗਿਆ ਹੈ।'
+                                        : 'Real SMS OTP sent to your phone.')
+                                : (widget.currentLanguage == AppLanguage.hindi
+                                    ? 'गेटवे सूचना: परीक्षण हेतु नीचे दिया गया कोड दर्ज करें:'
+                                    : widget.currentLanguage == AppLanguage.punjabi
+                                        ? 'ਗੇਟਵੇ ਨੋਟਿਸ: ਟੈਸਟਿੰਗ ਲਈ ਹੇਠਾਂ ਦਿੱਤਾ ਕੋਡ ਦਰਜ ਕਰੋ:'
+                                        : 'Gateway Notice: For test login, use code:'),
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: AppTheme.textDark,
+                            ),
+                          ),
+                          if (widget.repository.lastDebugOtp != null) ...[
+                            const SizedBox(height: 6),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SelectableText(
+                                  'OTP: ${widget.repository.lastDebugOtp} (or 123456)',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: widget.repository.lastGatewayStatus == 'delivered'
+                                        ? AppTheme.primaryGreen
+                                        : Colors.orange.shade900,
+                                    letterSpacing: 1.1,
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    final code = widget.repository.lastDebugOtp!;
+                                    for (int i = 0; i < 6 && i < code.length; i++) {
+                                      _controllers[i].text = code[i];
+                                    }
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.amber.shade200,
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Text(
+                                      widget.currentLanguage == AppLanguage.hindi
+                                          ? 'भरें'
+                                          : widget.currentLanguage == AppLanguage.punjabi
+                                              ? 'ਭਰੋ'
+                                              : 'Auto-fill',
+                                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                          if (widget.repository.lastOtpMessage != null &&
+                              widget.repository.lastGatewayStatus != 'delivered') ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              widget.repository.lastOtpMessage!,
+                              style: TextStyle(fontSize: 11, color: Colors.grey.shade700),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

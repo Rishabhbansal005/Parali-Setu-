@@ -31,11 +31,13 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedTabIndex = 0;
   UserProfile? _profile;
   bool _isLoadingProfile = true;
+  late AppLanguage _currentLanguage;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   @override
   void initState() {
     super.initState();
+    _currentLanguage = widget.currentLanguage;
     _loadProfile();
   }
 
@@ -45,6 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         setState(() {
           _profile = p;
+          if (p.language.isNotEmpty) {
+            _currentLanguage = AppLanguage.fromCode(p.language);
+          }
           _isLoadingProfile = false;
         });
       }
@@ -53,6 +58,9 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         setState(() {
           _profile = cached;
+          if (cached != null && cached.language.isNotEmpty) {
+            _currentLanguage = AppLanguage.fromCode(cached.language);
+          }
           _isLoadingProfile = false;
         });
       }
@@ -68,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (_) => PhoneLoginScreen(
           repository: widget.repository,
           onLanguageChanged: widget.onLanguageChanged,
-          currentLanguage: widget.currentLanguage,
+          currentLanguage: _currentLanguage,
         ),
       ),
       (route) => false,
@@ -76,17 +84,208 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onLanguageSelected(AppLanguage lang) async {
+    setState(() {
+      _currentLanguage = lang;
+    });
     widget.onLanguageChanged(lang);
     try {
       await _storage.write(key: AppConstants.keyLanguage, value: lang.code);
     } catch (_) {}
     try {
-      await widget.repository.updateProfile(language: lang.code);
+      final updated = await widget.repository.updateProfile(language: lang.code);
+      if (mounted) {
+        setState(() => _profile = updated);
+      }
     } catch (_) {}
   }
 
+  void _showNotificationCenter() {
+    final displayName = _profile?.name ?? 'Gurpreet Singh';
+    final alertTitle = _currentLanguage == AppLanguage.punjabi
+        ? '$displayName ਦੇ ਸੁਨੇਹੇ (ਅਲਰਟ)'
+        : (_currentLanguage == AppLanguage.hindi
+            ? '$displayName के संदेश (अलर्ट)'
+            : "$displayName's Alerts");
+
+    final notifications = _currentLanguage == AppLanguage.punjabi
+        ? [
+            {
+              'title': '💰 ₹12,000 ਖਾਤੇ ਵਿੱਚ ਜਮ੍ਹਾਂ (Escrow ਜਾਰੀ)',
+              'body': 'ਧਰਮਕੰਡਾ ਸਕੇਲ ਨੇ 8.0t ਪਰਾਲੀ ਦੀ ਪੁਸ਼ਟੀ ਕੀਤੀ। ਭੁਗਤਾਨ IMPS ਰਾਹੀਂ ਸਫਲਤਾਪੂਰਵਕ ਜਮ੍ਹਾਂ ਹੋਇਆ।',
+              'time': 'ਹੁਣੇ',
+              'icon': Icons.account_balance_wallet,
+              'color': AppTheme.primaryGreen,
+            },
+            {
+              'title': '🚜 ਟਰੱਕ ਅਤੇ ਬੇਲਰ ਰਵਾਨਾ (ਟਰੱਕ ਰਵਾਨਾ)',
+              'body': 'ਗੱਡੀ ਨੰਬਰ PB-11-AB-4029 ਤੁਹਾਡੇ ਖੇਤ (Kot Buddha) ਲਈ ਰਵਾਨਾ ਹੋ ਚੁੱਕੀ ਹੈ। ETA: 25 ਮਿੰਟ।',
+              'time': '15 ਮਿੰਟ ਪਹਿਲਾਂ',
+              'icon': Icons.local_shipping,
+              'color': Colors.blue,
+            },
+            {
+              'title': '🛰️ ਨੋ-ਬਰਨ ਸਰਟੀਫਿਕੇਟ ਜਾਰੀ (Sentinel-2)',
+              'body': 'Sentinel-2 ਸੈਟੇਲਾਈਟ ਨੇ ਜ਼ੀਰੋ ਅੱਗ ਦੀ ਪੁਸ਼ਟੀ ਕੀਤੀ (dNBR 0.038)। ₹2,500/ਏਕੜ ਸਬਸਿਡੀ ਅਨਲੌਕ।',
+              'time': '1 ਘੰਟਾ ਪਹਿਲਾਂ',
+              'icon': Icons.verified,
+              'color': Colors.purple,
+            },
+          ]
+        : (_currentLanguage == AppLanguage.hindi
+            ? [
+                {
+                  'title': '💰 ₹12,000 खाते में जमा (एस्क्रो रिलीज)',
+                  'body': 'धर्मकांटा स्केल ने 8.0t पराली सत्यापित की। भुगतान IMPS द्वारा सफलतापूर्वक जमा हुआ।',
+                  'time': 'अभी',
+                  'icon': Icons.account_balance_wallet,
+                  'color': AppTheme.primaryGreen,
+                },
+                {
+                  'title': '🚜 ट्रक और बेलर रवाना (ट्रक प्रेषित)',
+                  'body': 'गाड़ी संख्या PB-11-AB-4029 आपके खेत (Kot Buddha) के लिए रवाना हो चुकी है। ETA: 25 मिनट।',
+                  'time': '15 मिनट पहले',
+                  'icon': Icons.local_shipping,
+                  'color': Colors.blue,
+                },
+                {
+                  'title': '🛰️ नो-बर्न सर्टिफिकेट जारी (Sentinel-2)',
+                  'body': 'Sentinel-2 सैटेलाइट ने शून्य आग की पुष्टि की (dNBR 0.038)। ₹2,500/एकड़ सब्सिडी अनलॉक।',
+                  'time': '1 घंटा पहले',
+                  'icon': Icons.verified,
+                  'color': Colors.purple,
+                },
+              ]
+            : [
+                {
+                  'title': '💰 ₹12,000 Credited (Escrow Released)',
+                  'body': 'Dharamkanta scale verified 8.0t stubble. Payment disbursed successfully via IMPS.',
+                  'time': 'Just now',
+                  'icon': Icons.account_balance_wallet,
+                  'color': AppTheme.primaryGreen,
+                },
+                {
+                  'title': '🚜 Truck & Baler Dispatched',
+                  'body': 'Vehicle PB-11-AB-4029 is en route to your field (Kot Buddha). ETA: 25 mins.',
+                  'time': '15m ago',
+                  'icon': Icons.local_shipping,
+                  'color': Colors.blue,
+                },
+                {
+                  'title': '🛰️ No-Burn Certificate Issued (Sentinel-2)',
+                  'body': 'Sentinel-2 satellite confirmed zero fire (dNBR 0.038). ₹2,500/acre subsidy unlocked.',
+                  'time': '1h ago',
+                  'icon': Icons.verified,
+                  'color': Colors.purple,
+                },
+              ]);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 20,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: AppTheme.primaryGreen.withValues(alpha: 0.12),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.notifications_active, color: AppTheme.primaryGreen, size: 22),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            alertTitle,
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.textDark),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(ctx),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              ...notifications.map((n) => Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF9FAF9),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: const Color(0xFFE2ECE2)),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: (n['color'] as Color).withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(n['icon'] as IconData, color: n['color'] as Color, size: 20),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  n['title'] as String,
+                                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.textDark),
+                                ),
+                              ),
+                              Text(n['time'] as String, style: const TextStyle(fontSize: 11, color: AppTheme.textMuted)),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            n['body'] as String,
+                            style: const TextStyle(fontSize: 12, color: AppTheme.textMuted, height: 1.35),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              )),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   void _showEditProfileDialog() {
-    final strings = AppStrings(widget.currentLanguage);
+    final strings = AppStrings(_currentLanguage);
     final nameController = TextEditingController(text: _profile?.name ?? '');
     final villageController = TextEditingController(text: _profile?.village ?? '');
     final districtController = TextEditingController(text: _profile?.district ?? '');
@@ -139,6 +338,42 @@ class _HomeScreenState extends State<HomeScreen> {
                   labelText: 'District',
                 ),
               ),
+              const SizedBox(height: 16),
+              Text(
+                strings.chooseLanguage,
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.textDark),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  ChoiceChip(
+                    label: Text(strings.englishLabel),
+                    selected: _currentLanguage == AppLanguage.english,
+                    onSelected: (_) {
+                      _onLanguageSelected(AppLanguage.english);
+                      Navigator.pop(ctx);
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                  ChoiceChip(
+                    label: const Text('हिंदी'),
+                    selected: _currentLanguage == AppLanguage.hindi,
+                    onSelected: (_) {
+                      _onLanguageSelected(AppLanguage.hindi);
+                      Navigator.pop(ctx);
+                    },
+                  ),
+                  const SizedBox(width: 8),
+                  ChoiceChip(
+                    label: const Text('ਪੰਜਾਬੀ'),
+                    selected: _currentLanguage == AppLanguage.punjabi,
+                    onSelected: (_) {
+                      _onLanguageSelected(AppLanguage.punjabi);
+                      Navigator.pop(ctx);
+                    },
+                  ),
+                ],
+              ),
               const SizedBox(height: 24),
               SizedBox(
                 height: 56,
@@ -172,7 +407,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final strings = AppStrings(widget.currentLanguage);
+    final strings = AppStrings(_currentLanguage);
 
     return Scaffold(
       backgroundColor: AppTheme.warmBackground,
@@ -277,32 +512,142 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              CircleAvatar(
-                radius: 24,
-                backgroundColor: AppTheme.primaryGreen.withValues(alpha: 0.12),
-                child: const Icon(Icons.person, color: AppTheme.primaryGreen, size: 28),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        const Icon(Icons.notifications_outlined, color: AppTheme.primaryGreen, size: 28),
+                        Positioned(
+                          right: -2,
+                          top: -2,
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: const BoxDecoration(
+                              color: Colors.red,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Text('3', style: TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                      ],
+                    ),
+                    onPressed: _showNotificationCenter,
+                  ),
+                  const SizedBox(width: 4),
+                  GestureDetector(
+                    onTap: () => setState(() => _selectedTabIndex = 1),
+                    child: CircleAvatar(
+                      radius: 22,
+                      backgroundColor: AppTheme.primaryGreen.withValues(alpha: 0.12),
+                      child: const Icon(Icons.person, color: AppTheme.primaryGreen, size: 26),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
 
-          const SizedBox(height: 24),
+          // Weather & Ambient Harvest banner (Matching reference design)
+          Container(
+            margin: const EdgeInsets.only(top: 14, bottom: 18),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF1F8F1),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFCDE4CD)),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.shade100,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.wb_sunny_rounded, color: Colors.amber, size: 20),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _currentLanguage == AppLanguage.punjabi
+                            ? '28°C · ਧੁੱਪ · ਤਰਨ ਤਾਰਨ ਹੱਬ'
+                            : (_currentLanguage == AppLanguage.hindi
+                                ? '28°C · धूप · तरनतारन हब'
+                                : '28°C · Sunny · Tarn Taran Hub'),
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.textDark,
+                        ),
+                      ),
+                      Text(
+                        _currentLanguage == AppLanguage.punjabi
+                            ? 'ਬੇਲਿੰਗ ਅਤੇ ਪਰਾਲੀ ਇਕੱਠੀ ਕਰਨ ਲਈ ਉੱਤਮ ਮੌਸਮ'
+                            : (_currentLanguage == AppLanguage.hindi
+                                ? 'बेलिंग और पराली संग्रहण हेतु अनुकूल मौसम'
+                                : 'Ideal conditions for baling & residue collection'),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryGreen.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    _currentLanguage == AppLanguage.punjabi
+                        ? 'ਖ਼ਰੀਫ਼ 26'
+                        : (_currentLanguage == AppLanguage.hindi
+                            ? 'खरीफ 26'
+                            : 'Kharif 26'),
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.primaryGreen,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
 
           // Primary Hero Card: "Check my stubble value"
           Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
-            elevation: 2,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+            elevation: 4,
+            shadowColor: AppTheme.primaryGreen.withValues(alpha: 0.2),
             child: Container(
               padding: const EdgeInsets.all(22),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(22),
-                gradient: LinearGradient(
+                borderRadius: BorderRadius.circular(24),
+                gradient: const LinearGradient(
                   colors: [
+                    Color(0xFF0F3E15),
                     AppTheme.primaryGreen,
-                    AppTheme.secondaryGreen,
+                    Color(0xFF2E7D32),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.primaryGreen.withValues(alpha: 0.15),
+                    blurRadius: 16,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -315,6 +660,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         decoration: BoxDecoration(
                           color: AppTheme.wheatGold,
                           borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.1),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                         ),
                         child: Text(
                           strings.tonnesUnit,
@@ -325,7 +677,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                      const Icon(Icons.currency_rupee, color: Colors.white70, size: 26),
+                      Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.12),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.currency_rupee, color: Colors.white, size: 22),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 18),
@@ -342,12 +701,38 @@ class _HomeScreenState extends State<HomeScreen> {
                   Text(
                     strings.checkStubbleCardSubtitle,
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 14,
                       color: Colors.white.withValues(alpha: 0.9),
                       height: 1.35,
                     ),
                   ),
-                  const SizedBox(height: 22),
+
+                  // Voice intake feature chip
+                  Container(
+                    margin: const EdgeInsets.only(top: 14, bottom: 18),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.mic, color: Colors.amber, size: 16),
+                        SizedBox(width: 6),
+                        Text(
+                          'Voice Intake Ready (ਪੰਜਾਬੀ / हिंदी)',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
                   SizedBox(
                     height: 56,
                     width: double.infinity,
@@ -356,7 +741,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppTheme.wheatGold,
                         foregroundColor: Colors.white,
-                        elevation: 0,
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                       ),
                       onPressed: () {
                         Navigator.push(
@@ -373,7 +761,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(strings.estimateNowBtn),
+                          Text(
+                            strings.estimateNowBtn,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           const SizedBox(width: 8),
                           const Icon(Icons.arrow_forward, size: 20),
                         ],
@@ -417,7 +811,6 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icons.local_shipping_outlined,
             title: strings.step3Title,
             subtitle: strings.step3Desc,
-            badge: strings.comingSoon,
           ),
         ],
       ),
@@ -643,7 +1036,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildLangChip(String label, AppLanguage lang) {
-    final isSelected = widget.currentLanguage == lang;
+    final isSelected = _currentLanguage == lang;
     return ChoiceChip(
       label: Text(
         label,

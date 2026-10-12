@@ -9,6 +9,8 @@ class SendOtpResponse(BaseModel):
     message: str
     phone_e164: str
     is_mock: bool = True
+    debug_otp: Optional[str] = None
+    gateway_status: Optional[str] = None
 
 class VerifyOtpRequest(BaseModel):
     phone_e164: str = Field(..., example="+919876543210")

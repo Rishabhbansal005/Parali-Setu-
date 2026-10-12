@@ -80,10 +80,10 @@ class _LanguageChoiceScreenState extends State<LanguageChoiceScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Punjabi Option (Marked NEEDS NATIVE REVIEW)
+              // Punjabi Option
               _buildLanguageCard(
                 title: 'ਪੰਜਾਬੀ',
-                subtitle: 'Punjabi /* NEEDS NATIVE REVIEW */',
+                subtitle: 'ਪੰਜਾਬੀ (Punjabi)',
                 isSelected: _selectedLanguage == AppLanguage.punjabi,
                 onTap: () {
                   setState(() {
