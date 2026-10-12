@@ -43,24 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
       widget.onLanguageChanged(AppLanguage.fromCode(savedLang));
     }
 
-    // 2. Check onboarding status
-    final hasSeenOnboarding = await _storage.read(key: AppConstants.keyHasSeenOnboarding);
-    if (hasSeenOnboarding != 'true') {
-      if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => OnboardingScreen(
-            repository: widget.repository,
-            onLanguageChanged: widget.onLanguageChanged,
-            currentLanguage: widget.currentLanguage,
-          ),
-        ),
-      );
-      return;
-    }
-
-    // 3. Check session tokens
+    // 2. Check session tokens FIRST (Persistent login / auto-login)
     final token = await _storage.read(key: AppConstants.keyAccessToken);
     if (token != null && token.isNotEmpty) {
       try {
@@ -98,6 +81,23 @@ class _SplashScreenState extends State<SplashScreen> {
           return;
         }
       }
+    }
+
+    // 3. If no session, check onboarding status
+    final hasSeenOnboarding = await _storage.read(key: AppConstants.keyHasSeenOnboarding);
+    if (hasSeenOnboarding != 'true') {
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => OnboardingScreen(
+            repository: widget.repository,
+            onLanguageChanged: widget.onLanguageChanged,
+            currentLanguage: widget.currentLanguage,
+          ),
+        ),
+      );
+      return;
     }
 
     // Default to login if no valid session

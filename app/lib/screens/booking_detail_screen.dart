@@ -173,10 +173,29 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
         });
 
         if (mounted) {
+          final strings = AppStrings(widget.language);
+          final payout = (updated.finalPayoutInr ?? 12000).toStringAsFixed(0);
+          final smsMsg = strings.isPunjabi
+              ? '📲 ਐਸਐਮਐਸ ਭੇਜਿਆ: ₹$payout ਖਾਤੇ ਵਿੱਚ ਜਮ੍ਹਾਂ ਹੋ ਗਏ ਹਨ! (ਧਰਮਕੰਡਾ ਤਸਦੀਕ)'
+              : (strings.isHindi
+                  ? '📲 एसएमएस भेजा: ₹$payout आपके बैंक खाते में जमा कर दिए गए हैं! (धर्मकांटा प्रमाणित)'
+                  : '📲 SMS Dispatched: ₹$payout credited to bank account! (Weighbridge Verified)');
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              backgroundColor: Color(0xFF2E7D32),
-              content: Text('✓ Weighbridge certified! Escrow released to farmer account.'),
+            SnackBar(
+              backgroundColor: const Color(0xFF2E7D32),
+              duration: const Duration(seconds: 4),
+              content: Row(
+                children: [
+                  const Icon(Icons.mark_email_read_outlined, color: Colors.white, size: 24),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      smsMsg,
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         }

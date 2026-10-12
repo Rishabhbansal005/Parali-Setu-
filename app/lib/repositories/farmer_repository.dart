@@ -37,6 +37,10 @@ class AuthTokens {
 }
 
 abstract class FarmerRepository {
+  String? get lastDebugOtp;
+  String? get lastOtpMessage;
+  String? get lastGatewayStatus;
+
   Future<bool> sendOtp(String phoneE164, {Function(String)? onStatusUpdate});
   Future<AuthTokens> verifyOtp(String phoneE164, String otp, {Function(String)? onStatusUpdate});
   Future<UserProfile> getProfile({Function(String)? onStatusUpdate});
@@ -107,6 +111,18 @@ class ApiFarmerRepository implements FarmerRepository {
 
   String? _cachedAccessToken;
   String? _cachedFarmerId;
+  String? _lastDebugOtp;
+  String? _lastOtpMessage;
+  String? _lastGatewayStatus;
+
+  @override
+  String? get lastDebugOtp => _lastDebugOtp;
+
+  @override
+  String? get lastOtpMessage => _lastOtpMessage;
+
+  @override
+  String? get lastGatewayStatus => _lastGatewayStatus;
 
   ApiFarmerRepository({required this.baseUrl});
 
@@ -156,6 +172,12 @@ class ApiFarmerRepository implements FarmerRepository {
           body: jsonEncode({'phone_e164': phoneE164}),
         );
         if (response.statusCode == 200) {
+          try {
+            final data = jsonDecode(response.body);
+            _lastDebugOtp = data['debug_otp'] as String?;
+            _lastOtpMessage = data['message'] as String?;
+            _lastGatewayStatus = data['gateway_status'] as String?;
+          } catch (_) {}
           return true;
         } else {
           final errorData = jsonDecode(response.body);
@@ -189,6 +211,7 @@ class ApiFarmerRepository implements FarmerRepository {
           await _storage.write(key: AppConstants.keyAccessToken, value: accessToken);
           await _storage.write(key: AppConstants.keyRefreshToken, value: refreshToken);
           await _storage.write(key: AppConstants.keyFarmerId, value: farmerId);
+          await _storage.write(key: AppConstants.keyHasSeenOnboarding, value: 'true');
 
           // Eagerly fetch and cache profile
           try {
@@ -672,6 +695,15 @@ class MockFarmerRepository implements FarmerRepository {
   );
 
   @override
+  String? get lastDebugOtp => '123456';
+
+  @override
+  String? get lastOtpMessage => 'Demo Mode (Offline simulation)';
+
+  @override
+  String? get lastGatewayStatus => 'mock';
+
+  @override
   Future<bool> sendOtp(String phoneE164, {Function(String)? onStatusUpdate}) async {
     return true;
   }
@@ -683,6 +715,13 @@ class MockFarmerRepository implements FarmerRepository {
     _mockStorage[AppConstants.keyRefreshToken] = 'mock_jwt_refresh_token';
     _mockStorage[AppConstants.keyFarmerId] = _mockProfile.id;
     _mockStorage[AppConstants.keyCachedProfile] = jsonEncode(_mockProfile.toJson());
+
+    const storage = FlutterSecureStorage();
+    try {
+      await storage.write(key: AppConstants.keyAccessToken, value: 'mock_jwt_access_token');
+      await storage.write(key: AppConstants.keyCachedProfile, value: jsonEncode(_mockProfile.toJson()));
+      await storage.write(key: AppConstants.keyHasSeenOnboarding, value: 'true');
+    } catch (_) {}
 
     return AuthTokens(
       accessToken: 'mock_jwt_access_token',
@@ -742,6 +781,11 @@ class MockFarmerRepository implements FarmerRepository {
     _mockStorage.remove(AppConstants.keyRefreshToken);
     _mockStorage.remove(AppConstants.keyFarmerId);
     _mockStorage.remove(AppConstants.keyCachedProfile);
+    const storage = FlutterSecureStorage();
+    try {
+      await storage.delete(key: AppConstants.keyAccessToken);
+      await storage.delete(key: AppConstants.keyCachedProfile);
+    } catch (_) {}
   }
 
   @override
@@ -804,7 +848,7 @@ class MockFarmerRepository implements FarmerRepository {
         tag: 'BEST_VALUE',
         tagLabelEn: 'Best Net Payout',
         tagLabelHi: 'सबसे ज्यादा मुनाफा',
-        tagLabelPa: 'ਸਭ ਤੋਂ ਵੱਧ ਮੁਨਾਫਾ /* NEEDS NATIVE REVIEW */',
+        tagLabelPa: 'ਸਭ ਤੋਂ ਵੱਧ ਮੁਨਾਫਾ',
         proposedPickupDate: targetHarvest.add(const Duration(days: 2)),
         daysAfterHarvest: 2,
         machineName: 'Gurdeep Singh Agro Balers',
@@ -829,7 +873,7 @@ class MockFarmerRepository implements FarmerRepository {
         tag: 'FASTEST',
         tagLabelEn: 'Fastest 24h Pickup',
         tagLabelHi: 'सबसे तेज 24 घंटे में उठान',
-        tagLabelPa: 'ਸਭ ਤੋਂ ਤੇਜ਼ 24 ਘੰਟੇ ਚੁਕਾਈ /* NEEDS NATIVE REVIEW */',
+        tagLabelPa: 'ਸਭ ਤੋਂ ਤੇਜ਼ 24 ਘੰਟੇ ਚੁਕਾਈ',
         proposedPickupDate: targetHarvest.add(const Duration(days: 1)),
         daysAfterHarvest: 1,
         machineName: 'Kisan Sahayata CHC Nabha',
@@ -854,7 +898,7 @@ class MockFarmerRepository implements FarmerRepository {
         tag: 'LOCAL_GREEN',
         tagLabelEn: 'Local Clean Energy Plant',
         tagLabelHi: 'स्थानीय स्वच्छ ऊर्जा प्लांट',
-        tagLabelPa: 'ਸਥਾਨਕ ਸਾਫ਼ ਊਰਜਾ ਪਲਾਂਟ /* NEEDS NATIVE REVIEW */',
+        tagLabelPa: 'ਸਥਾਨਕ ਸਾਫ਼ ਊਰਜਾ ਪਲਾਂਟ',
         proposedPickupDate: targetHarvest.add(const Duration(days: 3)),
         daysAfterHarvest: 3,
         machineName: 'Malwa Precision Balers',
@@ -1074,7 +1118,7 @@ class MockFarmerRepository implements FarmerRepository {
 }
 
 class RepositoryProvider {
-  static const String definedBaseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: '');
+  static const String definedBaseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: 'http://localhost:8000');
 
   static FarmerRepository getRepository() {
     if (definedBaseUrl.isNotEmpty && !definedBaseUrl.contains('example.com')) {

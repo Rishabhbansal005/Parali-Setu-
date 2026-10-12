@@ -1,15 +1,22 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-jakarta",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "ParaliSetu — Operations Web Portal | Buyers & Weighbridge Terminal",
-  description: "Unified supply chain command portal for Bio-CNG plants, Dharamkanta weighbridge operators, and KVK agriculture officers.",
+  title: "ParaliSetu — Operations Dashboard | Punjab Agri-Tech Platform",
+  description: "Unified supply chain command portal for Bio-CNG plants, Dharamkanta weighbridge operators, and KVK agriculture officers managing parali residue in Punjab.",
 };
 
 export default function RootLayout({
@@ -18,8 +25,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <html lang="en" className={`${inter.variable} ${plusJakarta.variable} h-full`}>
+      <body className="min-h-full flex flex-col font-sans antialiased">
         {children}
       </body>
     </html>

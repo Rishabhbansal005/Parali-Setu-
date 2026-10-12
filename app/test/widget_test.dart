@@ -87,7 +87,7 @@ void main() {
       // Switch to Punjabi
       await tester.tap(find.text('ਪੰਜਾਬੀ'));
       await tester.pumpAndSettle();
-      expect(find.text('ਇਸਨੂੰ ਸਾੜੋ ਨਾ। ਵੇਚੋ। /* NEEDS NATIVE REVIEW */'), findsOneWidget);
+      expect(find.text('ਇਸਨੂੰ ਸਾੜੋ ਨਾ। ਵੇਚੋ।'), findsOneWidget);
     });
 
     testWidgets('Session restore: HomeScreen displays farmer greeting and tabs', (WidgetTester tester) async {

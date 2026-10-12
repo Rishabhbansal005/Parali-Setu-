@@ -8,8 +8,58 @@ Calculates avoided CO2, PM2.5, and equivalent trees based on published CEEW/NEER
 from __future__ import annotations
 import math
 import uuid
+import csv
+import io
+import urllib.request
 from datetime import datetime, timezone, date
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
+
+from app.core.config import settings
+
+def fetch_live_nasa_firms_hotspots(
+    min_lon: float = 73.0,
+    min_lat: float = 29.0,
+    max_lon: float = 77.0,
+    max_lat: float = 33.0,
+    day_range: int = 1,
+) -> Dict[str, Any]:
+    """
+    Queries real NASA FIRMS VIIRS satellite thermal detection feed for Punjab.
+    Uses the user's authentic NASA FIRMS MAP_KEY.
+    """
+    map_key = settings.NASA_FIRMS_MAP_KEY
+    if not map_key:
+        return {
+            "source": "NASA FIRMS (Mock / Standby)",
+            "total_active_fires": 0,
+            "hotspots": [],
+            "status": "No NASA_FIRMS_MAP_KEY configured",
+        }
+
+    url = (
+        f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/"
+        f"{map_key}/VIIRS_SNPP_NRT/{min_lon},{min_lat},{max_lon},{max_lat}/{day_range}"
+    )
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "ParaliSetu/1.0"})
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            content = resp.read().decode("utf-8")
+            reader = csv.DictReader(io.StringIO(content))
+            hotspots = list(reader)
+            return {
+                "source": "NASA FIRMS VIIRS Suomi-NPP (Live 375m Satellite)",
+                "total_active_fires": len(hotspots),
+                "hotspots": hotspots[:20],
+                "bounding_box": {"min_lon": min_lon, "min_lat": min_lat, "max_lon": max_lon, "max_lat": max_lat},
+                "status": "LIVE_SATELLITE_FEED_ACTIVE",
+            }
+    except Exception as e:
+        return {
+            "source": "NASA FIRMS VIIRS (Offline Fallback)",
+            "total_active_fires": 0,
+            "hotspots": [],
+            "status": f"Error contacting NASA API: {str(e)}",
+        }
 
 # Published Environmental Emission Factors (CEEW / NEERI guidelines)
 CO2_AVOIDED_KG_PER_TONNE = 1500.0   # 1.5 tonnes CO2 per tonne stubble diverted from burning

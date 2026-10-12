@@ -64,7 +64,16 @@ class Settings(BaseSettings):
     OTP_LOCKOUT_SECONDS: int = 300      # 5 minute lockout duration
 
     # ── Payment ───────────────────────────────────────────────────────────────
-    PAYMENT_PROVIDER: str = "mock"      # 'mock' | 'razorpay'
+    PAYMENT_PROVIDER: str = "mock"      # 'mock' | 'razorpay' | 'cashfree'
+    CASHFREE_APP_ID: str = ""
+    CASHFREE_SECRET_KEY: str = ""
+
+    # ── External Real Data APIs ────────────────────────────────────────────────
+    NASA_FIRMS_MAP_KEY: str = ""
+    SARVAM_API_KEY: str = ""
+    FAST2SMS_API_KEY: str = ""
+    SUPABASE_PUBLISHABLE_KEY: str = ""
+    SUPABASE_SECRET_KEY: str = ""
 
     # ── App ───────────────────────────────────────────────────────────────────
     APP_NAME: str = "ParaliSetu API"

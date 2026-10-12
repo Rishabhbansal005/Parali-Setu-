@@ -166,6 +166,15 @@ def create_booking(
 
     return _build_booking_response(booking)
 
+@router.get("", response_model=List[BookingResponse])
+def list_bookings(
+    db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_current_user),
+):
+    """Lists all active bookings across the district for dashboard tracking."""
+    bookings = db.query(Booking).order_by(Booking.confirmed_at.desc()).limit(50).all()
+    return [_build_booking_response(b) for b in bookings]
+
 @router.get("/{booking_id}", response_model=BookingResponse)
 def get_booking(
     booking_id: str,
@@ -295,6 +304,37 @@ def submit_weighbridge_ticket(
 
     db.commit()
     db.refresh(booking)
+
+    # 1. Release escrow via payment provider
+    try:
+        from app.services.payment_provider import get_payment_provider
+        payment_prov = get_payment_provider()
+        payment_prov.release_escrow(
+            order_id=str(booking.id),
+            amount_inr=actual_net_payout,
+            destination_account=booking.farmer.phone_e164 if booking.farmer else None,
+        )
+    except Exception as e:
+        print(f"[ESCROW RELEASE ERROR] {e}")
+
+    # 2. Dispatch Real SMS Notification to Farmer
+    try:
+        if booking.farmer and booking.farmer.phone_e164:
+            from app.services.otp_provider import get_otp_provider
+            otp_prov = get_otp_provider()
+            lang = booking.farmer.preferred_language or "pa"
+            ticket_no = wb.ticket_number or "DK-VERIFIED"
+            
+            if lang == "pa":
+                sms_text = f"ParaliSetu: ਵਧਾਈਆਂ {booking.farmer.name or 'ਕਿਸਾਨ ਵੀਰ'}! ਤੁਹਾਡੀ {net_tonnes}t ਪਰਾਲੀ ਦਾ ਧਰਮਕੰਡਾ ਵਜ਼ਨ ਤਸਦੀਕ ਹੋ ਗਿਆ ਹੈ। ₹{actual_net_payout:,.0f} ਐਸਕਰੋ ਭੁਗਤਾਨ ਤੁਹਾਡੇ ਬੈਂਕ ਖਾਤੇ ਵਿੱਚ ਜਮ੍ਹਾਂ ਹੋ ਗਿਆ ਹੈ। (ਪਰਚੀ: {ticket_no})"
+            elif lang == "hi":
+                sms_text = f"ParaliSetu: बधाई हो {booking.farmer.name or 'किसान ভাই'}! आपकी {net_tonnes}t पराली का धर्मकांटा वजन सत्यापित हो गया है। ₹{actual_net_payout:,.0f} एस्क्रो भुगतान आपके बैंक खाते में जमा कर दिया गया है। (रसीद: {ticket_no})"
+            else:
+                sms_text = f"ParaliSetu: Congratulations {booking.farmer.name or 'Farmer'}! Your {net_tonnes}t stubble is weighbridge certified. ₹{actual_net_payout:,.0f} escrow payment has been successfully credited to your bank account. (Ticket: {ticket_no})"
+            
+            otp_prov.send_sms(booking.farmer.phone_e164, sms_text)
+    except Exception as e:
+        print(f"[SMS DISPATCH ERROR] {e}")
 
     return _build_booking_response(booking)
 

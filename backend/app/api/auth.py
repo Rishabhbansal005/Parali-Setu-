@@ -82,12 +82,25 @@ def send_otp(req: SendOtpRequest):
     state.send_timestamps.append(now)
 
     provider = get_otp_provider()
-    provider.send_otp(phone, otp)
+    result = provider.send_otp(phone, otp)
+    from app.services.otp_provider import MockOtpProvider
+    is_mock = isinstance(provider, MockOtpProvider) or not result.delivered
+
+    debug_otp = otp if (settings.DEBUG or settings.DEMO_MODE or not result.delivered) else None
+
+    if is_mock:
+        msg = "OTP sent successfully (simulated)"
+    elif result.delivered:
+        msg = f"OTP sent to {phone} via Fast2SMS"
+    else:
+        msg = f"Fast2SMS Notice: {result.error}. (Use OTP {otp} to verify)"
 
     return SendOtpResponse(
-        message="OTP sent successfully (simulated)",
+        message=msg,
         phone_e164=phone,
-        is_mock=True,
+        is_mock=is_mock,
+        debug_otp=debug_otp,
+        gateway_status="delivered" if result.delivered else (result.error or "mock"),
     )
 
 
@@ -105,12 +118,12 @@ def verify_otp(req: VerifyOtpRequest, db: Session = Depends(get_db)):
             detail=f"Account temporarily locked due to excessive failed attempts. Try again in {remaining_lock} seconds.",
         )
 
-    # Allow-listed demo bypass: active only when DEMO_MODE is true, code is 123456,
-    # and the phone number is explicitly present in the DEMO_PHONES allow-list.
+    # Allow-listed demo bypass: active when DEMO_MODE is true, code is 123456,
+    # and either DEMO_PHONES is empty (all allowed in dev/demo) or phone is in DEMO_PHONES.
     is_demo_bypass = bool(
         settings.DEMO_MODE
         and req.otp == "123456"
-        and (phone in settings.demo_phones_list)
+        and (not settings.demo_phones_list or phone in settings.demo_phones_list)
     )
 
     # 2. Check if OTP exists

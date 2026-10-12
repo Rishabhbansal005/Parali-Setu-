@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../l10n/app_strings.dart';
 import '../models/voice_intake_result.dart';
 import '../repositories/farmer_repository.dart';
@@ -520,6 +521,9 @@ class _VoiceIntakeSheetContent extends StatefulWidget {
 
 class _VoiceIntakeSheetContentState extends State<_VoiceIntakeSheetContent> {
   final TextEditingController _transcriptController = TextEditingController();
+  final stt.SpeechToText _speech = stt.SpeechToText();
+  bool _isListening = false;
+  bool _speechInitialized = false;
   bool _isAnalyzing = false;
   VoiceIntakeResult? _parsedResult;
   String? _errorMessage;
@@ -529,11 +533,89 @@ class _VoiceIntakeSheetContentState extends State<_VoiceIntakeSheetContent> {
   final List<String> _demoSamples = [
     '4 killa PR-126, 25 October',
     '6 ਕਿੱਲੇ Pusa-44, 28 ਅਕਤੂਬਰ',
+    '5 एकड़ PR-131, 26 अक्टूबर',
     '10 bigha Basmati, kal',
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _initSpeechRecognizer();
+  }
+
+  Future<void> _initSpeechRecognizer() async {
+    try {
+      final available = await _speech.initialize(
+        onStatus: (status) {
+          if (status == 'notListening' || status == 'done') {
+            if (mounted) setState(() => _isListening = false);
+            if (_transcriptController.text.trim().isNotEmpty) {
+              _processTranscript(_transcriptController.text.trim());
+            }
+          }
+        },
+        onError: (err) {
+          if (mounted) {
+            setState(() {
+              _isListening = false;
+            });
+          }
+        },
+      );
+      if (mounted) {
+        setState(() => _speechInitialized = available);
+      }
+    } catch (_) {}
+  }
+
+  Future<void> _toggleListening() async {
+    if (_isAnalyzing) return;
+
+    if (_isListening) {
+      await _speech.stop();
+      if (mounted) setState(() => _isListening = false);
+      if (_transcriptController.text.trim().isNotEmpty) {
+        _processTranscript(_transcriptController.text.trim());
+      }
+    } else {
+      if (!_speechInitialized) {
+        await _initSpeechRecognizer();
+      }
+      if (_speechInitialized) {
+        setState(() {
+          _isListening = true;
+          _errorMessage = null;
+        });
+
+        await _speech.listen(
+          listenOptions: stt.SpeechListenOptions(
+            listenMode: stt.ListenMode.dictation,
+          ),
+          onResult: (val) {
+            if (mounted) {
+              setState(() {
+                _transcriptController.text = val.recognizedWords;
+              });
+              if (val.finalResult && val.recognizedWords.isNotEmpty) {
+                _processTranscript(val.recognizedWords);
+              }
+            }
+          },
+        );
+      } else {
+        // Fallback if hardware speech recognizer is not initialized
+        final sample = _transcriptController.text.trim().isNotEmpty
+            ? _transcriptController.text
+            : _demoSamples[0];
+        _transcriptController.text = sample;
+        _processTranscript(sample);
+      }
+    }
+  }
+
+  @override
   void dispose() {
+    _speech.stop().catchError((_) {});
     _transcriptController.dispose();
     super.dispose();
   }
@@ -614,17 +696,50 @@ class _VoiceIntakeSheetContentState extends State<_VoiceIntakeSheetContent> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Pulsing Mic Icon
+        // Interactive Mic Button
         Center(
-          child: Container(
-            width: 76,
-            height: 76,
-            decoration: BoxDecoration(
-              color: AppTheme.primaryGreen.withValues(alpha: 0.12),
-              shape: BoxShape.circle,
-            ),
-            child: const Center(
-              child: Icon(Icons.mic, color: AppTheme.primaryGreen, size: 42),
+          child: GestureDetector(
+            onTap: _isAnalyzing ? null : _toggleListening,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              width: 86,
+              height: 86,
+              decoration: BoxDecoration(
+                color: _isListening
+                    ? Colors.red.withValues(alpha: 0.16)
+                    : (_isAnalyzing
+                        ? Colors.amber.withValues(alpha: 0.18)
+                        : AppTheme.primaryGreen.withValues(alpha: 0.14)),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: _isListening
+                      ? Colors.red
+                      : (_isAnalyzing ? Colors.amber : AppTheme.primaryGreen),
+                  width: _isListening ? 3.5 : 2.5,
+                ),
+                boxShadow: _isListening
+                    ? [
+                        BoxShadow(
+                          color: Colors.red.withValues(alpha: 0.25),
+                          blurRadius: 16,
+                          spreadRadius: 4,
+                        ),
+                      ]
+                    : null,
+              ),
+              child: Center(
+                child: _isAnalyzing
+                    ? const SizedBox(
+                        width: 32,
+                        height: 32,
+                        child: CircularProgressIndicator(color: AppTheme.primaryGreen, strokeWidth: 3),
+                      )
+                    : Icon(
+                        _isListening ? Icons.mic : Icons.mic_none,
+                        color: _isListening ? Colors.red : AppTheme.primaryGreen,
+                        size: 46,
+                      ),
+              ),
             ),
           ),
         ),
@@ -632,12 +747,18 @@ class _VoiceIntakeSheetContentState extends State<_VoiceIntakeSheetContent> {
 
         // Title & Vernacular hint
         Text(
-          _strings.listeningTitle,
+          _isListening
+              ? (widget.language == AppLanguage.punjabi
+                  ? 'ਸੁਣ ਰਹੇ ਹਾਂ... ਹੁਣ ਬੋਲੋ 🎙️'
+                  : (widget.language == AppLanguage.english
+                      ? 'Listening... Speak now 🎙️'
+                      : 'सुन रहे हैं... अब बोलिए 🎙️'))
+              : _strings.listeningTitle,
           textAlign: TextAlign.center,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: AppTheme.textDark,
+            color: _isListening ? Colors.red.shade700 : AppTheme.textDark,
           ),
         ),
         const SizedBox(height: 6),
