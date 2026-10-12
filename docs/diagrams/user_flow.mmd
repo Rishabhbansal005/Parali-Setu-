@@ -1,0 +1,42 @@
+sequenceDiagram
+    autonumber
+    actor Farmer as Farmer (Mobile App)
+    participant Voice as Voice Intake / API
+    participant Engine as Estimation & Matching Engine (OR-Tools)
+    actor Buyer as Biomass Buyer / Factory (Web Portal)
+    actor Scale as Dharamkanta Weighbridge (Web Terminal)
+    participant Sat as Sentinel-2 Satellite Engine
+    actor KVK as KVK / DAO Agriculture Officer
+
+    %% 1. Intake & Estimation
+    Farmer->>Voice: Speaks "4 killa PR-126, 25 October"
+    Voice->>Farmer: Displays Confirmation Card (4 acres, PR-126, Oct 25)
+    Farmer->>Voice: Confirms ("हाँ, सही है") -> Auto-fills form
+    Farmer->>Engine: Requests Stubble Yield & Value Estimate
+    Engine-->>Farmer: Yield: 8.0t recoverable, Income: ₹7,680 - ₹11,520
+
+    %% 2. Matching & Booking
+    Farmer->>Engine: Find Matched Bundles (Baler + Truck + Buyer)
+    Engine->>Engine: Google OR-Tools CP-SAT Solver matches capacity & route
+    Engine-->>Farmer: Displays 3 Bundles (Best Value, Fastest Pickup, Max Revenue)
+    Farmer->>Engine: Books Bundle #1
+    Engine->>Buyer: Holds Buyer Escrow (₹12,000 held in vault)
+    Engine-->>Farmer: Booking Confirmed (Status: ESCROW_FUNDED)
+
+    %% 3. Harvesting & Transport
+    Note over Farmer,Buyer: Baler compresses stubble into 8.0t bales.<br/>Truck PB-11-AB-4029 collects and drives to weighbridge.
+
+    %% 4. Dharamkanta Certification & Instant Payout
+    Truck->>Scale: Arrives at Dharamkanta scale
+    Scale->>Scale: Logs Gross: 14.2t, Tare: 6.2t -> Certified Net: 8.0t
+    Scale->>Engine: Submits Ticket TKT-DK-2026-9941 & releases escrow
+    Engine->>Farmer: Sends instant notification & releases IMPS payout (₹12,000)
+    Engine-->>Farmer: Booking Status -> PAID
+
+    %% 5. Satellite Verification & Subsidy
+    Sat->>Sat: Sentinel-2 SWIR repeat scan (14-day post-harvest)
+    Sat->>Sat: Calculates dNBR (0.038 < 0.15 threshold -> Verified Clean Harvest)
+    Sat->>Engine: Generates No-Burn Certificate (CERT-PSETU-889900)
+    Engine->>KVK: Queues Certificate in KVK Compliance Portal
+    KVK->>Farmer: Approves ₹1,000/acre State Ex-Situ Management Subsidy (₹4,000)
+    Farmer-->>Farmer: Downloads Official Green Diploma & Shares with KVK

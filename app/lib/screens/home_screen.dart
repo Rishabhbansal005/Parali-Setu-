@@ -982,39 +982,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
 
-          const SizedBox(height: 24),
-
-          // About Card
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF0F4F0),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFD0DDD0)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(Icons.info_outline, color: AppTheme.primaryGreen, size: 20),
-                    const SizedBox(width: 8),
-                    Text(
-                      strings.aboutTitle,
-                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppTheme.textDark),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  strings.aboutText,
-                  style: const TextStyle(fontSize: 13, color: AppTheme.textMuted, height: 1.4),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 28),
+          const SizedBox(height: 16),
 
           // Logout Button
           SizedBox(

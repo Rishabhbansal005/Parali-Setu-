@@ -115,7 +115,6 @@ void main() {
 
       expect(find.text('Farmer Profile'), findsOneWidget);
       expect(find.text('Gurpreet Singh'), findsOneWidget);
-      expect(find.text('About ParaliSetu'), findsOneWidget);
       expect(find.text('Log Out'), findsOneWidget);
     });
 

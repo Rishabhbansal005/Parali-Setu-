@@ -1,0 +1,59 @@
+graph TD
+    %% Clients Layer
+    subgraph Clients["Frontend Clients Layer"]
+        FarmerApp["Farmer Mobile App<br/>(Flutter 3.x / Dart / Trilingual: EN, HI, PA)<br/>• Offline Cache & Voice Intake"]
+        WebPortal["Operations Web Portal<br/>(Next.js 15 / TypeScript / Tailwind CSS)<br/>• Dharamkanta Terminal<br/>• Biomass Buyer Command Center<br/>• KVK & District DAO Auditor"]
+    end
+
+    %% API Gateway & Security
+    subgraph Gateway["FastAPI REST & WebSocket Gateway"]
+        AuthRouter["/auth/*<br/>(Phone OTP, PyJWT Auth, Rate Limiter)"]
+        FarmsRouter["/farmers/{id}/farms<br/>(WGS84 GPS Plots, Khasra Mapping)"]
+        EstimateRouter["/estimates<br/>(Agronomic Factor Engine: PR-126/Pusa-44)"]
+        VoiceRouter["/voice/parse<br/>(Vernacular Regex/NLP Entity Extractor)"]
+        MatchRouter["/matching/*<br/>(Constraint Bundling & Feasibility)"]
+        BookingRouter["/bookings/*<br/>(State Machine: Draft -> Matched -> Escrow -> Paid)"]
+    end
+
+    %% Algorithmic & AI Engine Services
+    subgraph Engines["Engines & AI Services Layer"]
+        VoiceEngine["Voice Parser Engine<br/>(Gurmukhi, Devanagari, Hinglish Number & Date Normalization)"]
+        EstimationEngine["Agronomic Estimation Engine<br/>(2.0 t/acre baler recoverable residue factor)"]
+        MatchingEngine["Matching Optimizer<br/>(Google OR-Tools CP-SAT Solver)"]
+        SatelliteEngine["Satellite Verification Engine<br/>(Copernicus Sentinel-2 SWIR dNBR Index)"]
+    end
+
+    %% Data & Persistence Layer
+    subgraph DataStore["Persistence & Storage Layer"]
+        SupabasePooler["Supabase Connection Pooler<br/>(PgBouncer Port 6543 / Direct 5432)"]
+        PostgresDB[("PostgreSQL 15 Database<br/>12 Application Tables + RLS Policies")]
+        PostGIS["PostGIS Spatial Extension<br/>(ST_DWithin, ST_Distance, SRID 4326)"]
+    end
+
+    %% Client to Gateway connections
+    FarmerApp -->|HTTPS / REST| AuthRouter
+    FarmerApp -->|Voice Audio/Transcript| VoiceRouter
+    FarmerApp -->|Plot & Area| FarmsRouter
+    FarmerApp -->|Stubble Query| EstimateRouter
+    FarmerApp -->|Bundles & Bookings| MatchRouter
+    FarmerApp -->|Status & Escrow Stepper| BookingRouter
+
+    WebPortal -->|Weighbridge Certification| BookingRouter
+    WebPortal -->|Buyer Demand Quotas| MatchRouter
+    WebPortal -->|KVK DAO Satellite Audit| SatelliteEngine
+
+    %% Gateway to Engines
+    VoiceRouter --> VoiceEngine
+    EstimateRouter --> EstimationEngine
+    MatchRouter --> MatchingEngine
+    BookingRouter --> SatelliteEngine
+
+    %% Persistence integration
+    AuthRouter --> SupabasePooler
+    FarmsRouter --> SupabasePooler
+    EstimateRouter --> SupabasePooler
+    BookingRouter --> SupabasePooler
+    MatchingEngine --> SupabasePooler
+
+    SupabasePooler --> PostgresDB
+    PostgresDB --- PostGIS
