@@ -2,7 +2,7 @@
 
 **Version:** 0.2 — 8 October 2026
 **Status:** Living document. All agents must read this file before writing code.
-**Owner:** Team ParaliSetu (Amazon Environmental Hacks, Oct 8–11, 2026)
+**Owner:** Team ParaliSetu (Hack for Social 2026)
 
 > This is the single source of truth for the ParaliSetu project.
 > If anything contradicts REFERENCE_NOTES.md, this file wins.

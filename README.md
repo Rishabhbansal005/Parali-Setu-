@@ -29,6 +29,17 @@
 
 ---
 
+> ### 📋 Hack for Social — Evaluation Checklist & Project Deliverables
+> | Evaluation Criteria | Status in Repo | Location & Direct Links |
+> | :--- | :---: | :--- |
+> | **1. Setup Steps & Environment Variables** | ✅ **COMPLETE** | [Quick Start Setup Guide](#-quick-start--setup-windows) • [Environment Variables](#-environment-variable-names) • [`.env.example`](backend/.env.example) |
+> | **2. Technical Design Document & Diagrams** | ✅ **COMPLETE** | [Technical Design Spec (`SPEC.md`)](SPEC.md) • [Architecture Explained](docs/ARCHITECTURE_EXPLAINED.md) • [Architecture Diagram](docs/diagrams/architecture.png) |
+> | **3. Sample Data & Test Cases** | ✅ **COMPLETE** | [Database Seed Script](backend/scripts/seed.py) • [35 Backend Tests](backend/tests/) • [20 Flutter Tests](app/test/) *(100% Green)* |
+> | **4. License File** | ✅ **COMPLETE** | [MIT Open-Source License](LICENSE) |
+> | **Bonus: Business Model Canvas & Research** | ✅ **COMPLETE** | [9-Block Business Model Canvas](docs/business/business_model_canvas.md) • [Printable PDF](docs/business/ParaliSetu_Business_Model_Canvas.pdf) |
+
+---
+
 ## 📖 About the Project
 
 **ParaliSetu** (*"Bridge for Paddy Straw"*) is a voice-first, multi-stakeholder agricultural logistics and marketplace platform built to solve the annual stubble burning crisis in Punjab, Haryana, and western Uttar Pradesh.

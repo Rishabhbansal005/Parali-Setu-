@@ -340,10 +340,10 @@ class AppStrings {
   String get logout => isEnglish ? 'Log Out' : (isHindi ? 'लॉग आउट' : 'ਲਾਗ ਆਉਟ');
   String get aboutTitle => isEnglish ? 'About ParaliSetu' : (isHindi ? 'पराली सेतु के बारे में' : 'ਪਰਾਲੀ ਸੇਤੂ ਬਾਰੇ');
   String get aboutText => isEnglish
-      ? 'Simulated prototype built for Amazon Environmental Hacks 2026. All farmer and booking data in this demo is simulated.'
+      ? 'Simulated prototype built for Hack for Social 2026. All farmer and booking data in this demo is simulated.'
       : (isHindi
-          ? 'अमेज़न एनवायर्नमेंटल हैक्स 2026 के लिए निर्मित प्रोटोटाइप। इस डेमो में सभी डेटा सिम्युलेटेड हैं।'
-          : 'ਐਮਾਜ਼ਾਨ ਐਨਵਾਇਰਨਮੈਂਟਲ ਹੈਕਸ 2026 ਲਈ ਬਣਾਇਆ ਪ੍ਰੋਟੋਟਾਈਪ। ਇਸ ਡੈਮੋ ਵਿੱਚ ਸਾਰਾ ਡਾਟਾ ਸਿਮੂਲੇਟਿਡ ਹੈ।');
+          ? 'हैक फॉर सोशल 2026 के लिए निर्मित प्रोटोटाइप। इस डेमो में सभी डेटा सिम्युलेटेड हैं।'
+          : 'ਹੈਕ ਫਾਰ ਸੋਸ਼ਲ 2026 ਲਈ ਬਣਾਇਆ ਪ੍ਰੋਟੋਟਾਈਪ। ਇਸ ਡੈਮੋ ਵਿੱਚ ਸਾਰਾ ਡਾਟਾ ਸਿਮੂਲੇਟਿਡ ਹੈ।');
 
   // ── Matching & Options Screen ─────────────────────────────────────────────
   String get selectBundleTitle => isEnglish
