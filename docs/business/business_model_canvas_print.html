@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ParaliSetu — Business Model Canvas (Hack for Social)</title>
+<style>
+  @page {
+    size: A4 landscape;
+    margin: 8mm;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  body {
+    background: #f8fafc;
+    color: #0f172a;
+    padding: 4px;
+    font-size: 11px;
+    line-height: 1.35;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #059669;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-size: 18px;
+    color: #065f46;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .header .meta {
+    font-size: 10px;
+    color: #475569;
+    text-align: right;
+  }
+  .bmc-grid {
+    display: grid;
+    grid-template-columns: 20% 20% 20% 20% 20%;
+    grid-template-rows: 240px 140px;
+    gap: 6px;
+  }
+  .block {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .block-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #047857;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border-bottom: 1px dashed #e2e8f0;
+    padding-bottom: 3px;
+  }
+  .block-content {
+    overflow-y: auto;
+    font-size: 10px;
+    color: #334155;
+  }
+  .block-content p {
+    margin-bottom: 4px;
+  }
+  .block-content ul {
+    padding-left: 14px;
+    margin-bottom: 4px;
+  }
+  .block-content li {
+    margin-bottom: 2px;
+  }
+  strong {
+    color: #0f172a;
+  }
+  .badge {
+    display: inline-block;
+    background: #d1fae5;
+    color: #065f46;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-weight: 600;
+    font-size: 9px;
+  }
+  /* Grid placement */
+  .key-partners { grid-column: 1; grid-row: 1; }
+  .key-activities { grid-column: 2; grid-row: 1 / span 1; height: 117px; }
+  .key-resources { grid-column: 2; grid-row: 1 / span 1; margin-top: 123px; height: 117px; }
+  .value-prop { grid-column: 3; grid-row: 1; background: #f0fdf4; border-color: #86efac; }
+  .cust-relationships { grid-column: 4; grid-row: 1 / span 1; height: 117px; }
+  .channels { grid-column: 4; grid-row: 1 / span 1; margin-top: 123px; height: 117px; }
+  .cust-segments { grid-column: 5; grid-row: 1; }
+  .cost-structure { grid-column: 1 / span 3; grid-row: 2; }
+  .revenue-streams { grid-column: 4 / span 2; grid-row: 2; background: #f0fdf4; border-color: #86efac; }
+  .footer {
+    margin-top: 8px;
+    font-size: 9px;
+    color: #64748b;
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>ParaliSetu: Business Model Canvas</h1>
+    <div style="font-size: 11px; color: #047857; font-weight: 600;">AI-Driven Hyperlocal Stubble Supply Chain, Baler Fleet Logistics & Escrow Marketplace</div>
+  </div>
+  <div class="meta">
+    <div><strong>Hackathon:</strong> Hack for Social | <strong>Track:</strong> Environment & Sustainability</div>
+    <div><strong>Repository:</strong> github.com/Rishabhbansal005/Parali-setu | <strong>Target Geography:</strong> Punjab & Haryana</div>
+  </div>
+</div>
+
+<div class="bmc-grid">
+  <!-- 8. KEY PARTNERS -->
+  <div class="block key-partners">
+    <div class="block-title">8. Key Partners</div>
+    <div class="block-content">
+      <p><strong>Industrial Offtakers:</strong></p>
+      <ul>
+        <li>Bio-CNG plants (under SATAT scheme, e.g. Verbio Sangrur).</li>
+        <li>2G Bio-Ethanol plants (IOCL Panipat) & biomass pellet boilers.</li>
+      </ul>
+      <p><strong>Equipment Pools:</strong></p>
+      <ul>
+        <li>Custom Hiring Centres (CHCs) with subsidized balers/rakes.</li>
+        <li>Local tractor-trolley fleet operators.</li>
+      </ul>
+      <p><strong>Trust & Verification:</strong></p>
+      <ul>
+        <li>Village <em>Dharamkanta</em> (licensed independent weighbridges).</li>
+        <li>KVKs & Punjab/Haryana State Agriculture Departments.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 6. KEY ACTIVITIES -->
+  <div class="block key-activities">
+    <div class="block-title">6. Key Activities</div>
+    <div class="block-content">
+      <ul>
+        <li><strong>PostGIS Clustering:</strong> Grouping 10–15 smallholdings into contiguous 35-acre runs.</li>
+        <li><strong>Vernacular Voice AI:</strong> Processing Punjabi/Hindi speech to structured booking data.</li>
+        <li><strong>Weighbridge Integration:</strong> Gross/tare ticket logging & instant escrow release.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 7. KEY RESOURCES -->
+  <div class="block key-resources">
+    <div class="block-title">7. Key Resources</div>
+    <div class="block-content">
+      <ul>
+        <li><strong>Proprietary IP:</strong> PostGIS spatial routing engine & Indic voice intake model.</li>
+        <li><strong>Agronomic Formula:</strong> PAU-verified yield lookup (2.0 tonnes/acre baler recovery).</li>
+        <li><strong>Network:</strong> 500+ baler/tractor operators & SATAT buyers.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 2. VALUE PROPOSITIONS -->
+  <div class="block value-prop">
+    <div class="block-title">2. Value Propositions</div>
+    <div class="block-content">
+      <p><strong>For Smallholder Farmers:</strong></p>
+      <ul>
+        <li><strong>Free field clearance</strong> within 48-72h of harvest.</li>
+        <li><strong>₹1,200–₹1,800/acre net income</strong> (₹650/tonne).</li>
+        <li>Zero CAQM fines + in-app No-Burn Certificate.</li>
+      </ul>
+      <p><strong>For Baler Operators:</strong></p>
+      <ul>
+        <li>Contiguous 30-acre runs eliminate deadhead transit miles.</li>
+        <li><strong>+32% diesel fuel efficiency</strong> and higher seasonal earnings.</li>
+      </ul>
+      <p><strong>For Industrial Buyers:</strong></p>
+      <ul>
+        <li>Predictable, moisture-tested daily feedstock schedule.</li>
+        <li>Prevents expensive digester shutdowns.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 4. CUSTOMER RELATIONSHIPS -->
+  <div class="block cust-relationships">
+    <div class="block-title">4. Customer Relationships</div>
+    <div class="block-content">
+      <ul>
+        <li><strong>Voice-First Simplicity:</strong> Zero learning curve for illiterate farmers.</li>
+        <li><strong>Dharamkanta Neutral Scale:</strong> Weight verified locally, not at distant factory.</li>
+        <li><strong>SMS/WhatsApp Receipts:</strong> Instant confirmation for non-smartphone users.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 3. CHANNELS -->
+  <div class="block channels">
+    <div class="block-title">3. Channels</div>
+    <div class="block-content">
+      <ul>
+        <li><strong>Flutter Mobile App:</strong> 17MB lightweight Android app with offline speech.</li>
+        <li><strong>Next.js Operations Portal:</strong> Weighbridge gross/tare logging & buyer portal.</li>
+        <li><strong>Local Nodes:</strong> Village Panchayats, CHCs, and Dharamkanta kiosks.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 1. CUSTOMER SEGMENTS -->
+  <div class="block cust-segments">
+    <div class="block-title">1. Customer Segments</div>
+    <div class="block-content">
+      <p><strong>Primary Beneficiaries:</strong></p>
+      <ul>
+        <li>Small & marginal farmers (1–4 acres) facing 15-day wheat sowing deadline. Pays ₹0.</li>
+      </ul>
+      <p><strong>Paying Customers:</strong></p>
+      <ul>
+        <li>Bio-CNG (CBG) refineries under the <strong>SATAT mandatory blending mandate (1%–5%)</strong>.</li>
+        <li>Biomass pellet manufacturers & industrial thermal power boilers.</li>
+      </ul>
+      <p><strong>Supply Partners:</strong></p>
+      <ul>
+        <li>Baler and tractor-trolley equipment owners seeking peak seasonal utilization.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 9. COST STRUCTURE -->
+  <div class="block cost-structure">
+    <div class="block-title">9. Cost Structure</div>
+    <div class="block-content">
+      <div style="display: grid; grid-template-columns: 50% 50%; gap: 8px;">
+        <div>
+          <p><strong>Technology & Platform (Fixed):</strong></p>
+          <ul>
+            <li>Supabase PostgreSQL/PostGIS database & cloud hosting: ₹35,000/mo.</li>
+            <li>Voice Whisper/Gemini ASR tokens & transactional SMS: ₹0.27/intake.</li>
+            <li>Sentinel-2 satellite NBR verification processing overhead.</li>
+          </ul>
+        </div>
+        <div>
+          <p><strong>Field Operations (Peak Season Variable):</strong></p>
+          <ul>
+            <li>Village Cluster Coordinators (Kisan Mitras) across 15 pilot clusters.</li>
+            <li>Handheld digital pin probe moisture meters (₹2,500/unit).</li>
+            <li>Banking escrow compliance & third-party weighment auditing.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. REVENUE STREAMS -->
+  <div class="block revenue-streams">
+    <div class="block-title">5. Revenue Streams & Commercial Model</div>
+    <div class="block-content">
+      <ul>
+        <li><strong>B2B Offtake Take-Rate (Primary):</strong> ₹150 / Tonne (5.8% commission on ₹2,600 delivered gate rate paid by industrial buyers; 0% fee on farmers).</li>
+        <li><strong>Baler Dispatch Optimization Fee:</strong> ₹40 / Tonne software fee for pre-clustered contiguous runs.</li>
+        <li><strong>Enterprise Data & ESG Audit SaaS:</strong> Traceability certification for OMCs (IOCL, BPCL, HPCL).</li>
+        <li><strong>Break-Even Volume:</strong> 20,000 Tonnes (~10,000 acres in 1 district). Year 3 Target: ₹15.0 Cr Net Revenue.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <div>ParaliSetu — Open-Source Sustainability Tech | MIT License</div>
+  <div>Grounded in PAU Ludhiana agronomic data & Ministry of Petroleum SATAT Mandate</div>
+</div>
+
+</body>
+</html>
