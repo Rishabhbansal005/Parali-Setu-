@@ -91,3 +91,13 @@ docs/diagrams/thumb_*.png
 docs/diagrams/xyflow_*.png
 docs/slides/images/
 
+# 10. Video recordings, scripts, and video media
+docs/*VIDEO*
+docs/*Video*
+*.mp4
+*.mov
+*.webm
+*.avi
+*.mkv
+
+
