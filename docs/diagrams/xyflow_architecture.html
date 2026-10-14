@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ParaliSetu — xyflow High-Impact Presentation Architecture</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --dot: #cbd5e1;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      background-color: var(--bg);
+      background-image: radial-gradient(var(--dot) 1.5px, transparent 1.5px);
+      background-size: 20px 20px;
+      color: var(--text-main);
+      overflow: hidden;
+      width: 1440px;
+      height: 480px;
+      user-select: none;
+    }
+
+    .flow-stage {
+      position: relative;
+      width: 1440px;
+      height: 480px;
+    }
+
+    /* Subflow Group Enclosures */
+    .subflow-group {
+      position: absolute;
+      border-radius: 14px;
+      border: 1.8px dashed;
+      pointer-events: none;
+    }
+    .group-label {
+      position: absolute;
+      top: -11px;
+      left: 14px;
+      background: #ffffff;
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      border: 1.5px solid;
+    }
+
+    .g-clients {
+      top: 15px; left: 12px; width: 310px; height: 450px;
+      background: rgba(236, 253, 245, 0.4);
+      border-color: #6ee7b7;
+    }
+    .g-clients .group-label { border-color: #6ee7b7; color: #047857; }
+
+    .g-gateway {
+      top: 15px; left: 345px; width: 325px; height: 450px;
+      background: rgba(239, 246, 255, 0.4);
+      border-color: #93c5fd;
+    }
+    .g-gateway .group-label { border-color: #93c5fd; color: #1d4ed8; }
+
+    .g-ai {
+      top: 15px; left: 695px; width: 350px; height: 450px;
+      background: rgba(245, 243, 255, 0.4);
+      border-color: #c4b5fd;
+    }
+    .g-ai .group-label { border-color: #c4b5fd; color: #6d28d9; }
+
+    .g-settle {
+      top: 15px; left: 1070px; width: 345px; height: 450px;
+      background: rgba(255, 241, 242, 0.4);
+      border-color: #fca5a5;
+    }
+    .g-settle .group-label { border-color: #fca5a5; color: #be123c; }
+
+    /* Custom xyflow Node Cards */
+    .xy-node {
+      position: absolute;
+      background: var(--card-bg);
+      border: 1.6px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 8px 16px -2px rgba(15, 23, 42, 0.05), 0 3px 6px -1px rgba(15, 23, 42, 0.02);
+      padding: 9px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .node-header {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .node-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .node-title-box {
+      flex: 1;
+      min-width: 0;
+    }
+    .node-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+    .node-sub {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+    }
+
+    .node-chips {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 1px;
+    }
+    .node-badge {
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+    .node-metric {
+      font-size: 9.5px;
+      color: #475569;
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 5px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* Accents */
+    .acc-emerald .node-icon { background: #d1fae5; color: #059669; }
+    .acc-emerald .node-badge { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+
+    .acc-blue .node-icon { background: #dbeafe; color: #1d4ed8; }
+    .acc-blue .node-badge { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+
+    .acc-violet .node-icon { background: #ede9fe; color: #6d28d9; }
+    .acc-violet .node-badge { background: #f5f3ff; color: #5b21b6; border: 1px solid #ddd6fe; }
+
+    .acc-rose .node-icon { background: #ffe4e6; color: #e11d48; }
+    .acc-rose .node-badge { background: #fff1f2; color: #be123c; border: 1px solid #fecdd3; }
+
+    .acc-amber .node-icon { background: #fef3c7; color: #d97706; }
+    .acc-amber .node-badge { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+
+    /* Node Handles */
+    .xy-handle {
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid #64748b;
+      box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.15);
+      z-index: 20;
+    }
+    .handle-l { left: -5.5px; top: 50%; transform: translateY(-50%); }
+    .handle-r { right: -5.5px; top: 50%; transform: translateY(-50%); }
+
+    /* SVG Edges */
+    .edges-svg {
+      position: absolute;
+      inset: 0;
+      width: 1440px;
+      height: 480px;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .edge-line {
+      fill: none;
+      stroke-width: 2.2px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .edge-blue { stroke: #3b82f6; }
+    .edge-emerald { stroke: #10b981; }
+    .edge-violet { stroke: #8b5cf6; }
+    .edge-rose { stroke: #f43f5e; }
+
+    .edge-dash {
+      stroke-dasharray: 6 5;
+    }
+
+    /* Floating Edge Badges */
+    .edge-tag {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      background: #ffffff;
+      border: 1.2px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5px 8px;
+      font-size: 9.5px;
+      font-weight: 800;
+      color: var(--text-main);
+      box-shadow: 0 2px 4px rgba(15, 23, 42, 0.06);
+      white-space: nowrap;
+      z-index: 15;
+    }
+
+    /* xyflow Watermark */
+    .xyflow-watermark {
+      position: absolute;
+      bottom: 12px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 9px;
+      font-weight: 800;
+      color: #2563eb;
+      letter-spacing: 0.5px;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .dot-active {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="flow-stage">
+
+    <!-- SVG Edges Layer -->
+    <svg class="edges-svg">
+      <defs>
+        <marker id="m-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="#3b82f6" />
+        </marker>
+        <marker id="m-emerald" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="#10b981" />
+        </marker>
+        <marker id="m-violet" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="#8b5cf6" />
+        </marker>
+        <marker id="m-rose" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 1 L 9 5 L 0 9 z" fill="#f43f5e" />
+        </marker>
+      </defs>
+
+      <!-- 1. Farmer to Auth -->
+      <path class="edge-line edge-blue edge-dash" d="M 285 75 C 315 75, 325 75, 355 75" marker-end="url(#m-blue)" />
+      <!-- 2. Farmer to Gateway -->
+      <path class="edge-line edge-emerald" d="M 285 95 C 320 95, 320 215, 355 215" marker-end="url(#m-emerald)" />
+      <!-- 3. Scale to Gateway -->
+      <path class="edge-line edge-blue edge-dash" d="M 285 235 C 320 235, 320 235, 355 235" marker-end="url(#m-blue)" />
+      <!-- 4. Plant to Gateway -->
+      <path class="edge-line edge-blue edge-dash" d="M 285 395 C 320 395, 320 255, 355 255" marker-end="url(#m-blue)" />
+
+      <!-- 5. Gateway to NLP -->
+      <path class="edge-line edge-emerald" d="M 500 280 L 500 350" marker-end="url(#m-emerald)" />
+
+      <!-- 6. Gateway to OR-Tools -->
+      <path class="edge-line edge-violet" d="M 645 215 C 670 215, 670 75, 705 75" marker-end="url(#m-violet)" />
+      <!-- 7. Gateway to PostGIS -->
+      <path class="edge-line edge-blue" d="M 645 235 L 705 235" marker-end="url(#m-blue)" />
+
+      <!-- 8. OR-Tools to PostgreSQL -->
+      <path class="edge-line edge-violet" d="M 1025 75 C 1050 75, 1050 120, 1080 120" marker-end="url(#m-violet)" />
+      <!-- 9. PostGIS to PostgreSQL -->
+      <path class="edge-line edge-blue" d="M 1025 235 C 1050 235, 1050 140, 1080 140" marker-end="url(#m-blue)" />
+
+      <!-- 10. Scale/Gateway to Escrow (through channel y=300) -->
+      <path class="edge-line edge-emerald" d="M 645 255 C 750 300, 950 300, 1080 270" marker-end="url(#m-emerald)" />
+
+      <!-- 11. Sentinel-2 to DBT Clearance -->
+      <path class="edge-line edge-rose edge-dash" d="M 1025 395 L 1080 395" marker-end="url(#m-rose)" />
+
+      <!-- 12. Escrow to DBT Clearance -->
+      <path class="edge-line edge-rose" d="M 1230 310 L 1230 350" marker-end="url(#m-rose)" />
+    </svg>
+
+    <!-- Edge Labels (Placed strictly in clear channels with ZERO overlap) -->
+    <div class="edge-tag" style="left: 320px; top: 62px;">OTP Auth</div>
+    <div class="edge-tag" style="left: 320px; top: 145px;">Voice Audio / Plot</div>
+    <div class="edge-tag" style="left: 320px; top: 235px;">Gross/Tare</div>
+    <div class="edge-tag" style="left: 320px; top: 325px;">Biomass Quota</div>
+    <div class="edge-tag" style="left: 500px; top: 315px;">Normalize hi/pa</div>
+    <div class="edge-tag" style="left: 675px; top: 135px;">Solve Dispatch</div>
+    <div class="edge-tag" style="left: 675px; top: 210px;">25km Buffer</div>
+    <div class="edge-tag" style="left: 1045px; top: 80px;">Store Matches</div>
+    <div class="edge-tag" style="left: 865px; top: 295px;">Certified Scale Ticket ➔ Instant Escrow</div>
+    <div class="edge-tag" style="left: 1045px; top: 370px;">No-Burn ΔNBR</div>
+
+    <!-- ================= 1. CLIENT LAYER ================= -->
+    <div class="subflow-group g-clients">
+      <div class="group-label">1. Client & Field Ingestion</div>
+    </div>
+
+    <!-- Farmer App -->
+    <div class="xy-node acc-emerald" style="top: 30px; left: 25px; width: 260px; height: 86px;">
+      <div class="xy-handle handle-r"></div>
+      <div class="node-header">
+        <div class="node-icon">📱</div>
+        <div class="node-title-box">
+          <div class="node-title">Farmer Mobile App</div>
+          <div class="node-sub">Flutter 3.13 / Dart</div>
+        </div>
+      </div>
+      <div class="node-chips">
+        <span class="node-badge">Vernacular Voice (hi/pa)</span>
+        <span class="node-metric">Offline Noto Fonts</span>
+      </div>
+    </div>
+
+    <!-- Weighbridge Terminal -->
+    <div class="xy-node acc-amber" style="top: 190px; left: 25px; width: 260px; height: 86px;">
+      <div class="xy-handle handle-r"></div>
+      <div class="node-header">
+        <div class="node-icon">⚖️</div>
+        <div class="node-title-box">
+          <div class="node-title">Weighbridge Terminal</div>
+          <div class="node-sub">Next.js 15 / Serial API</div>
+        </div>
+      </div>
+      <div class="node-chips">
+        <span class="node-badge">RS-232 IoT Scale Hook</span>
+        <span class="node-metric">Certified Gross & Tare</span>
+      </div>
+    </div>
+
+    <!-- Bio-CNG Plant Portal -->
+    <div class="xy-node acc-blue" style="top: 350px; left: 25px; width: 260px; height: 86px;">
+      <div class="xy-handle handle-r"></div>
+      <div class="node-header">
+        <div class="node-icon">🏭</div>
+        <div class="node-title-box">
+          <div class="node-title">Bio-CNG Plant Portal</div>
+          <div class="node-sub">Next.js 15 / Turbopack</div>
+        </div>
+      </div>
+      <div class="node-chips">
+        <span class="node-badge">Industrial Demand Quotas</span>
+        <span class="node-metric">Fleet Dispatch Desk</span>
+      </div>
+    </div>
+
+    <!-- ================= 2. GATEWAY LAYER ================= -->
+    <div class="subflow-group g-gateway">
+      <div class="group-label">2. API & Speech Gateway</div>
+    </div>
+
+    <!-- Auth & Rate Limiter -->
+    <div class="xy-node acc-rose" style="top: 30px; left: 355px; width: 290px; height: 86px;">
+      <div class="xy-handle handle-l"></div>
+      <div class="xy-handle handle-r"></div>
+      <div class="node-header">
+        <div class="node-icon">🛡️</div>
+        <div class="node-title-box">
+          <div class="node-title">Auth & Rate Limiter</div>
+          <div class="node-sub">PyJWT / Phone OTP</div>
+        </div>
+      </div>
+      <div class="node-chips">
+        <span class="node-badge">Anti-Sybil Defense</span>
+        <span class="node-metric">Leaky-Bucket Throttle</span>
+      </div>
+    </div>
+
+    <!-- FastAPI REST Gateway -->
+    <div class="xy-node acc-blue" style="top: 190px; left: 355px; width: 290px; height: 86px;">
+      <div class="xy-handle handle-l"></div>
+      <div class="xy-handle handle-r"></div>
+      <div class="node-header">
+        <div class="node-icon">⚡</div>
+        <div class="node-title-box">
+          <div class="node-title">FastAPI REST Gateway</div>
+          <div class="node-sub">Python 3.12 / ASGI / Uvicorn</div>
+        </div>
+      </div>
+      <div class="node-chips">
+        <span class="node-badge">19 REST Endpoints</span>
+        <span class="node-metric">Async Concurrency</span>
+      </div>
+    </div>
+
+    <!-- Vernacular Voice Parser -->
+    <div class="xy-node acc-emerald" style="top: 350px; left: 355px; width: 290px; height: 86px;">
+      <div class="xy-handle handle-l"></div>
+      <div class="node-header">
+        <div class="node-icon">🎙️</div>
+        <div class="node-title-box">
+          <div class="node-title">Vernacular Voice Parser</div>
+          <div class="node-sub">Web Speech + Regex NLP</div>
+        </div>
+      </div>
+      <div class="node-chips">
+        <span class="node-badge">Hindi/Gurmukhi Normalizer</span>
+        <span class="node-metric">Pusa/PR Extraction</span>
+      </div>
+    </div>
+
+    <!-- ================= 3. AI ENGINES LAYER ================= -->
+    <div class="subflow-group g-ai">
+      <div class="group-label">3. AI Optimization & Remote Sensing</div>
+    </div>
+
+    <!-- Google OR-Tools CP-SAT -->
+    <div class="xy-node acc-violet" style="top: 30px; left: 705px; width: 320px; height: 86px;">
+      <div class="xy-handle handle-l"></div>
+      <div class="xy-handle handle-r"></div>
+      <div class="node-header">
+        <div class="node-icon">🧩</div>
+        <div class="node-title-box">
+          <div class="node-title">Google OR-Tools CP-SAT</div>
+          <div class="node-sub">Constraint Programming Solver</div>
+        </div>
+      </div>
+      <div class="node-chips">
+        <span class="node-badge">4-Party Combinatorial Match</span>
+        <span class="node-metric">&lt;500ms Dispatch</span>
+      </div>
+    </div>
+
+    <!-- Spatial Geofence Router -->
+    <div class="xy-node acc-blue" style="top: 190px; left: 705px; width: 320px; height: 86px;">
+      <div class="xy-handle handle-l"></div>
+      <div class="xy-handle handle-r"></div>
+      <div class="node-header">
+        <div class="node-icon">🗺️</div>
+        <div class="node-title-box">
+          <div class="node-title">Spatial Geofence Router</div>
+          <div class="node-sub">PostGIS ST_DWithin Index</div>
+        </div>
+      </div>
+      <div class="node-chips">
+        <span class="node-badge">25 km Baler Radius Buffer</span>
+        <span class="node-metric">Parcel Khasra Clusters</span>
+      </div>
+    </div>
+
+    <!-- Copernicus Sentinel-2 SWIR -->
+    <div class="xy-node acc-amber" style="top: 350px; left: 705px; width: 320px; height: 86px;">
+      <div class="xy-handle handle-l"></div>
+      <div class="xy-handle handle-r"></div>
+      <div class="node-header">
+        <div class="node-icon">🛰️</div>
+        <div class="node-title-box">
+          <div class="node-title">Sentinel-2 Spectral Engine</div>
+          <div class="node-sub">Copernicus B8 (NIR) + B12 (SWIR)</div>
+        </div>
+      </div>
+      <div class="node-chips">
+        <span class="node-badge">ΔNBR &lt; 0.15 Verification</span>
+        <span class="node-metric">10m Satellite</span>
+      </div>
+    </div>
+
+    <!-- ================= 4. PERSISTENCE & SETTLEMENT ================= -->
+    <div class="subflow-group g-settle">
+      <div class="group-label">4. Persistence & Escrow Settlement</div>
+    </div>
+
+    <!-- PostgreSQL 15 -->
+    <div class="xy-node acc-violet" style="top: 80px; left: 1080px; width: 300px; height: 86px;">
+      <div class="xy-handle handle-l"></div>
+      <div class="node-header">
+        <div class="node-icon">🗄️</div>
+        <div class="node-title-box">
+          <div class="node-title">PostgreSQL 15 (Supabase)</div>
+          <div class="node-sub">pgBouncer Connection Pool</div>
+        </div>
+      </div>
+      <div class="node-chips">
+        <span class="node-badge">12 Tables + RLS Policies</span>
+        <span class="node-metric">ACID Integrity</span>
+      </div>
+    </div>
+
+    <!-- Automated UPI Escrow -->
+    <div class="xy-node acc-emerald" style="top: 225px; left: 1080px; width: 300px; height: 86px;">
+      <div class="xy-handle handle-l"></div>
+      <div class="node-header">
+        <div class="node-icon">💳</div>
+        <div class="node-title-box">
+          <div class="node-title">Automated UPI Escrow</div>
+          <div class="node-sub">Certified Scale Trigger</div>
+        </div>
+      </div>
+      <div class="node-chips">
+        <span class="node-badge">Instant Farmer Cash Payout</span>
+        <span class="node-metric">Zero Intermediaries</span>
+      </div>
+    </div>
+
+    <!-- Govt DBT Audit Clearance -->
+    <div class="xy-node acc-rose" style="top: 350px; left: 1080px; width: 300px; height: 86px;">
+      <div class="xy-handle handle-l"></div>
+      <div class="node-header">
+        <div class="node-icon">🏛️</div>
+        <div class="node-title-box">
+          <div class="node-title">Govt DBT Audit Clearance</div>
+          <div class="node-sub">District Ag DAO Portal</div>
+        </div>
+      </div>
+      <div class="node-chips">
+        <span class="node-badge">₹1,000/acre Subsidy Release</span>
+        <span class="node-metric">Compliance Ledger</span>
+      </div>
+    </div>
+
+    <!-- xyflow Watermark -->
+    <div class="xyflow-watermark">
+      <div class="dot-active"></div>
+      <span>Powered by xyflow (react-flow)</span>
+    </div>
+
+  </div>
+
+</body>
+</html>

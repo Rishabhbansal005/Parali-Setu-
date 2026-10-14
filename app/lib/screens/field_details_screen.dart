@@ -93,7 +93,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
     try {
       // 1. Create farm record via repository
       final farm = await _repository.createFarm(
-        name: '$_selectedVariety खेत',
+        name: '$_selectedVariety Farm',
         areaAcres: _acres,
         variety: _selectedVariety,
         harvestMethod: _selectedHarvestMethod,
@@ -122,6 +122,7 @@ class _FieldDetailsScreenState extends State<FieldDetailsScreen> {
               acres: _acres,
               variety: _selectedVariety,
               harvestMethod: _selectedHarvestMethod,
+              repository: _repository,
             ),
           ),
         );

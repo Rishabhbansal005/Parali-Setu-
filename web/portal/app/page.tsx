@@ -99,41 +99,51 @@ export default function OperationsPortal() {
   useEffect(() => {
     async function checkHealth() {
       try {
-        const res = await fetch(`${apiBaseUrl}/health`,{method:"GET"});
-        if(res.ok){
+        const res = await fetch(`${apiBaseUrl}/health`, { method: "GET" });
+        if (res.ok) {
           setBackendStatus("online");
           // Fetch live bookings if available
           try {
-            const bRes = await fetch(`${apiBaseUrl}/bookings`, {method:"GET"});
+            const bRes = await fetch(`${apiBaseUrl}/bookings`, { method: "GET" });
             if (bRes.ok) {
               const liveBookings = await bRes.json();
               if (Array.isArray(liveBookings) && liveBookings.length > 0) {
                 // Merge live bookings into queue
                 const mapped: ShipmentItem[] = liveBookings.map((b: any, i: number) => ({
-                  id: `BK-LIVE-${b.id.slice(0,4).toUpperCase()}`,
+                  id: `BK-LIVE-${b.id.slice(0, 4).toUpperCase()}`,
                   bookingId: b.id,
-                  farmerName: "Gurpreet Singh",
+                  farmerName: "Gurpreet Singh (Live Booking)",
                   village: "Kot Buddha",
                   district: "Tarn Taran",
                   expectedTonnes: 8.0,
-                  truckNo: `PB-11-Live-${i+1}`,
+                  truckNo: `PB-11-Live-${i + 1}`,
                   transporter: "Sharma Agri Transport",
                   status: b.status === "paid" ? "paid" : "weighbridge_queue",
                   grossTonnes: 14.2,
                   tareTonnes: 6.2,
                   payoutInr: b.final_payout_inr || 12000,
-                  netTonnes: 8.0
+                  netTonnes: 8.0,
+                  arrivalEta: "At Gate"
                 }));
-                setShipments(prev => [...mapped, ...prev.filter(p => !p.id.startsWith("BK-LIVE"))]);
+                setShipments(prev => {
+                  const existingLiveIds = new Set(prev.map(p => p.bookingId));
+                  const newOnes = mapped.filter(m => !existingLiveIds.has(m.bookingId));
+                  if (newOnes.length > 0) {
+                    triggerToast("New Booking from Mobile!", `${newOnes[0].farmerName} queued at scale`, "success");
+                  }
+                  return [...mapped, ...prev.filter(p => !p.id.startsWith("BK-LIVE"))];
+                });
               }
             }
-          } catch(e){}
+          } catch (e) {}
           return;
         }
-      } catch(e){}
+      } catch (e) {}
       setBackendStatus("simulated");
     }
     checkHealth();
+    const pollInterval = setInterval(checkHealth, 3000);
+    return () => clearInterval(pollInterval);
   }, [apiBaseUrl]);
 
   const calculatedNet = Math.max(0,Number((grossWeight-tareWeight).toFixed(2)));

@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "ParaliSetu — Production System Architecture & Data Flow",
+    "output": "paralisetu_architecture.html",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    {
+      "id": "farmer_mobile",
+      "type": "frontend",
+      "label": "Farmer Mobile App",
+      "sublabel": "Flutter 3.13 / Dart",
+      "tag": "Vernacular Voice (hi/pa)",
+      "pos": [30, 80],
+      "size": [160, 68]
+    },
+    {
+      "id": "dharamkanta_web",
+      "type": "frontend",
+      "label": "Weighbridge Terminal",
+      "sublabel": "Next.js 15 / Serial Scale",
+      "tag": "RS-232 IoT Weight Intake",
+      "pos": [30, 200],
+      "size": [160, 68]
+    },
+    {
+      "id": "buyer_portal",
+      "type": "frontend",
+      "label": "Bio-CNG Plant Portal",
+      "sublabel": "Next.js 15 / Turbopack",
+      "tag": "Industrial Demand Quotas",
+      "pos": [30, 320],
+      "size": [160, 68]
+    },
+    {
+      "id": "auth_service",
+      "type": "security",
+      "label": "Auth & Rate Limiter",
+      "sublabel": "PyJWT / Phone OTP",
+      "tag": "Anti-Sybil Defense",
+      "pos": [250, 80],
+      "size": [155, 68]
+    },
+    {
+      "id": "api_gateway",
+      "type": "backend",
+      "label": "FastAPI REST Gateway",
+      "sublabel": "Python 3.12 / ASGI",
+      "tag": "19 REST API Endpoints",
+      "pos": [250, 200],
+      "size": [155, 68]
+    },
+    {
+      "id": "vernacular_nlp",
+      "type": "backend",
+      "label": "Vernacular Voice Parser",
+      "sublabel": "Web Speech + Regex NLP",
+      "tag": "Hindi/Gurmukhi Normalizer",
+      "pos": [250, 320],
+      "size": [155, 68]
+    },
+    {
+      "id": "ortools_engine",
+      "type": "backend",
+      "label": "Google OR-Tools CP-SAT",
+      "sublabel": "Constraint Solver",
+      "tag": "4-Party Combinatorial Match",
+      "pos": [470, 80],
+      "size": [165, 68]
+    },
+    {
+      "id": "spatial_cluster",
+      "type": "backend",
+      "label": "Spatial Geofence Router",
+      "sublabel": "PostGIS ST_DWithin",
+      "tag": "25km Baler Radius Clustering",
+      "pos": [470, 200],
+      "size": [165, 68]
+    },
+    {
+      "id": "sentinel_verifier",
+      "type": "cloud",
+      "label": "Sentinel-2 Spectral Engine",
+      "sublabel": "Copernicus B8 NIR + B12 SWIR",
+      "tag": "ΔNBR < 0.15 Remote Sensing",
+      "pos": [470, 320],
+      "size": [165, 68]
+    },
+    {
+      "id": "postgres_db",
+      "type": "database",
+      "label": "PostgreSQL 15 (Supabase)",
+      "sublabel": "pgBouncer Connection Pool",
+      "tag": "12 Tables + RLS Policies",
+      "pos": [700, 140],
+      "size": [160, 68]
+    },
+    {
+      "id": "escrow_settlement",
+      "type": "messagebus",
+      "label": "Automated UPI Escrow",
+      "sublabel": "Certified Scale Trigger",
+      "tag": "Instant Farmer Cash Payout",
+      "pos": [700, 260],
+      "size": [160, 68]
+    },
+    {
+      "id": "kvk_audit",
+      "type": "security",
+      "label": "Govt DBT Audit Clearance",
+      "sublabel": "District Ag DAO Portal",
+      "tag": "₹1,000/acre Subsidy Release",
+      "pos": [910, 200],
+      "size": [155, 68]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Client Layer (Offline-First)",
+      "wraps": ["farmer_mobile", "dharamkanta_web", "buyer_portal"]
+    },
+    {
+      "kind": "region",
+      "label": "API & NLP Gateway (FastAPI ASGI)",
+      "wraps": ["auth_service", "api_gateway", "vernacular_nlp"]
+    },
+    {
+      "kind": "region",
+      "label": "AI & Optimization Engines",
+      "wraps": ["ortools_engine", "spatial_cluster", "sentinel_verifier"]
+    },
+    {
+      "kind": "region",
+      "label": "Persistence & Escrow Settlement",
+      "wraps": ["postgres_db", "escrow_settlement"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "mob-to-auth",
+      "from": "farmer_mobile",
+      "to": "auth_service",
+      "label": "OTP Auth"
+    },
+    {
+      "id": "mob-to-api",
+      "from": "farmer_mobile",
+      "to": "api_gateway",
+      "label": "Voice / Listing",
+      "variant": "emphasis"
+    },
+    {
+      "id": "scale-to-api",
+      "from": "dharamkanta_web",
+      "to": "api_gateway",
+      "label": "Gross/Tare Net"
+    },
+    {
+      "id": "plant-to-api",
+      "from": "buyer_portal",
+      "to": "api_gateway",
+      "label": "Demand Quota"
+    },
+    {
+      "id": "api-to-nlp",
+      "from": "api_gateway",
+      "to": "vernacular_nlp",
+      "label": "Normalize"
+    },
+    {
+      "id": "api-to-ortools",
+      "from": "api_gateway",
+      "to": "ortools_engine",
+      "label": "Solve Dispatch",
+      "variant": "emphasis"
+    },
+    {
+      "id": "api-to-spatial",
+      "from": "api_gateway",
+      "to": "spatial_cluster",
+      "label": "25km Buffer"
+    },
+    {
+      "id": "ortools-to-db",
+      "from": "ortools_engine",
+      "to": "postgres_db",
+      "label": "Store Match"
+    },
+    {
+      "id": "spatial-to-db",
+      "from": "spatial_cluster",
+      "to": "postgres_db",
+      "label": "PostGIS Query"
+    },
+    {
+      "id": "api-to-escrow",
+      "from": "api_gateway",
+      "to": "escrow_settlement",
+      "label": "Scale Ticket",
+      "variant": "emphasis"
+    },
+    {
+      "id": "sentinel-to-kvk",
+      "from": "sentinel_verifier",
+      "to": "kvk_audit",
+      "label": "No-Burn Cert",
+      "variant": "security"
+    },
+    {
+      "id": "escrow-to-kvk",
+      "from": "escrow_settlement",
+      "to": "kvk_audit",
+      "label": "Payout Audit"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Ingestion & Frontend",
+      "items": [
+        "Flutter 3.13: 60 FPS on sub-₹7,000 rural phones",
+        "Offline Noto fonts & vernacular voice NLP (hi/pa)",
+        "Next.js 15: RS-232 weighbridge & Bio-CNG quotas"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "AI & Dispatch Engines",
+      "items": [
+        "Google OR-Tools CP-SAT: Solves 4-party NP-hard logistics",
+        "PostGIS: 25 km baler operational radius clustering",
+        "Copernicus Sentinel-2: SWIR dNBR zero-burn remote verification"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Settlement & Trust",
+      "items": [
+        "Dual-Gate Verification: Scale ticket triggers instant UPI",
+        "Tamper-proof satellite verification unlocks ₹1,000/acre DBT",
+        "Supabase PostgreSQL: 12 relational tables with Row-Level Security"
+      ]
+    }
+  ]
+}

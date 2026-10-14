@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Team Composition & Engineering Division — ParaliSetu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      width: 1920px;
+      height: 1080px;
+      background: #f8fafc;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      color: #0f172a;
+      overflow: hidden;
+      position: relative;
+      padding: 32px 56px 20px 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 90px;
+      margin-bottom: 14px;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+    .badge-mist {
+      width: 120px;
+      height: 60px;
+      border-radius: 9999px;
+      background: #fed7aa;
+      border: 2px solid #ea580c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 22px;
+      color: #9a3412;
+      letter-spacing: -0.5px;
+      box-shadow: 0 4px 12px rgba(234, 88, 12, 0.12);
+    }
+    .header-text h1 {
+      font-size: 34px;
+      font-weight: 800;
+      color: #1e3a8a;
+      line-height: 1.1;
+      letter-spacing: -0.8px;
+    }
+    .header-text p {
+      font-size: 15px;
+      font-weight: 600;
+      color: #64748b;
+      margin-top: 4px;
+    }
+    .badge-hack {
+      padding: 12px 28px;
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+    }
+
+    /* 3-Column Team Grid */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 26px;
+      height: 575px;
+    }
+
+    .member-card {
+      background: #ffffff;
+      border-radius: 20px;
+      border: 2px solid #e2e8f0;
+      box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.06);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .card-accent-blue { border-color: #bfdbfe; }
+    .card-accent-green { border-color: #a7f3d0; }
+    .card-accent-purple { border-color: #ddd6fe; }
+
+    /* Card Header Strip */
+    .card-top {
+      padding: 18px 22px 14px 22px;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .profile-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .avatar {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      flex-shrink: 0;
+    }
+    .avatar-blue { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+    .avatar-green { background: linear-gradient(135deg, #059669, #047857); }
+    .avatar-purple { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+
+    .name-block h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.4px;
+    }
+    .role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .color-blue { color: #2563eb; }
+    .color-green { color: #059669; }
+    .color-purple { color: #7c3aed; }
+
+    .division-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      width: fit-content;
+    }
+    .tag-blue { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .tag-green { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .tag-purple { background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe; }
+
+    /* Tech Stack Pills */
+    .tech-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 2px;
+    }
+    .pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #e2e8f0;
+    }
+    .pill-metric {
+      background: #f8fafc;
+      color: #0f172a;
+      border: 1px dashed #cbd5e1;
+      font-weight: 800;
+    }
+
+    /* Card Body */
+    .card-body {
+      padding: 16px 22px 18px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-grow: 1;
+      gap: 12px;
+    }
+    .section-title {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #1e293b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .contributions-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .contributions-list li {
+      font-size: 12.5px;
+      line-height: 1.4;
+      color: #334155;
+      position: relative;
+      padding-left: 14px;
+    }
+    .contributions-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      font-weight: 900;
+      color: #2563eb;
+    }
+    .card-accent-green .contributions-list li::before { color: #059669; }
+    .card-accent-purple .contributions-list li::before { color: #7c3aed; }
+    .contributions-list strong {
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    /* Challenge Box */
+    .challenge-box {
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 12px;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+    }
+    .challenge-row {
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+      color: #9f1239;
+    }
+    .solution-row {
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+      color: #065f46;
+      background: #ecfdf5;
+      border-radius: 8px;
+      padding: 6px 10px;
+      border: 1px solid #a7f3d0;
+    }
+
+    /* Journey Infographic Banner */
+    .journey-container {
+      background: #ffffff;
+      border-radius: 20px;
+      border: 2px solid #e2e8f0;
+      box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.05);
+      padding: 18px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 14px;
+      height: 220px;
+    }
+    .journey-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .journey-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #1e3a8a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .journey-tagline {
+      font-size: 13px;
+      font-weight: 700;
+      color: #2563eb;
+    }
+    .journey-steps {
+      display: grid;
+      grid-template-columns: 1fr 40px 1fr 40px 1fr;
+      align-items: center;
+      gap: 12px;
+    }
+    .step-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 12px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      height: 120px;
+      justify-content: center;
+    }
+    .step-badge {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .step-card h3 {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .step-card p {
+      font-size: 11.5px;
+      line-height: 1.35;
+      color: #475569;
+    }
+    .step-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #94a3b8;
+      font-weight: 900;
+    }
+
+    /* Footer & Verification */
+    .bottom-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #64748b;
+      padding-top: 8px;
+    }
+    .verif-links {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .verif-link {
+      color: #2563eb;
+      font-weight: 700;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="badge-mist">Mist</div>
+      <div class="header-text">
+        <h1>Team Composition & Engineering Division</h1>
+        <p>Three-Tier Architecture Ownership, Real Field Challenges & Hackathon Build Journey</p>
+      </div>
+    </div>
+    <div class="badge-hack">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      Hack for Social Cause
+    </div>
+  </div>
+
+  <!-- 3 Member Division Grid -->
+  <div class="team-grid">
+
+    <!-- Card 1: Rishabh Bansal -->
+    <div class="member-card card-accent-blue">
+      <div class="card-top">
+        <div class="profile-row">
+          <div class="avatar avatar-blue">RB</div>
+          <div class="name-block">
+            <h2>Rishabh Bansal</h2>
+            <div class="role-badge color-blue">⚡ Lead Architect & Optimization</div>
+          </div>
+        </div>
+        <div class="division-tag tag-blue">PART 1: CORE BRAIN & OPTIMIZATION</div>
+        <div class="tech-pills">
+          <span class="pill">FastAPI</span>
+          <span class="pill">Supabase PostGIS</span>
+          <span class="pill">Google OR-Tools</span>
+          <span class="pill pill-metric">⚡ &lt;2.0s Match</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="section-title">🎯 Core Technical Ownership</div>
+          <ul class="contributions-list">
+            <li><strong>Central Gateway & RLS:</strong> Built 12 normalized PostgreSQL tables with PostGIS spatial indexing & JWT security.</li>
+            <li><strong>Constraint Programming:</strong> Formulated NP-hard multi-sided CP-SAT solver (Farmer-Baler-Truck-Buyer).</li>
+            <li><strong>Agronomic Formula Engine:</strong> PAU yield matrices distinguishing total (~3.6t) vs baler recoverable (~2.0t/acre).</li>
+          </ul>
+        </div>
+        <div class="challenge-box">
+          <div class="challenge-row">
+            <strong>⚠️ Challenge:</strong> Multi-stop vehicle capacity deadlock under 15-day harvest crunch.
+          </div>
+          <div class="solution-row">
+            <strong>✅ Overcome:</strong> 25–40 acre contiguous farm clustering with radius relaxation.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Ravi Singh -->
+    <div class="member-card card-accent-green">
+      <div class="card-top">
+        <div class="profile-row">
+          <div class="avatar avatar-green">RS</div>
+          <div class="name-block">
+            <h2>Ravi Singh</h2>
+            <div class="role-badge color-green">📱 Mobile Systems & Vernacular AI</div>
+          </div>
+        </div>
+        <div class="division-tag tag-green">PART 2: FARMER APP & VERNACULAR AI</div>
+        <div class="tech-pills">
+          <span class="pill">Flutter 3.x</span>
+          <span class="pill">Bhashini STT</span>
+          <span class="pill">Gemini 1.5</span>
+          <span class="pill pill-metric">📦 17.03 MB Split APK</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="section-title">🎯 Core Technical Ownership</div>
+          <ul class="contributions-list">
+            <li><strong>Trilingual Mobile Client:</strong> Cross-platform Android app in Punjabi, Hindi & English for 2G/3G rural networks.</li>
+            <li><strong>Vernacular Voice Pipeline:</strong> Integrated Bhashini/Whisper STT with Gemini 1.5 entity parser for natural speech intake.</li>
+            <li><strong>Offline-First Resilience:</strong> Client-side SQLite cache and 100% deterministic manual UI fallback with steppers.</li>
+          </ul>
+        </div>
+        <div class="challenge-box">
+          <div class="challenge-row">
+            <strong>⚠️ Challenge:</strong> Heavy ambient tractor/combine acoustic noise causing vernacular STT errors.
+          </div>
+          <div class="solution-row">
+            <strong>✅ Overcome:</strong> Explicit audio confirmation readback (<em>"4 Killa, Sahi hai?"</em>).
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Vaibhav Yadav -->
+    <div class="member-card card-accent-purple">
+      <div class="card-top">
+        <div class="profile-row">
+          <div class="avatar avatar-purple">VY</div>
+          <div class="name-block">
+            <h2>Vaibhav Yadav</h2>
+            <div class="role-badge color-purple">🛰️ Web Platforms & Satellite / Anti-Fraud</div>
+          </div>
+        </div>
+        <div class="division-tag tag-purple">PART 3: INDUSTRIAL WEB & AUDIT</div>
+        <div class="tech-pills">
+          <span class="pill">Next.js 14</span>
+          <span class="pill">TailwindCSS</span>
+          <span class="pill">Sentinel-2 SWIR</span>
+          <span class="pill pill-metric">🛰️ ΔNBR &lt; 0.10 Audit</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="section-title">🎯 Core Technical Ownership</div>
+          <ul class="contributions-list">
+            <li><strong>Buyer Command Portals:</strong> Next.js dashboard for industrial Bio-CNG plants (demand quotas & escrow funding).</li>
+            <li><strong>Dharamkanta Scale OCR:</strong> Mobile weighbridge ticket intake with OCR & scale integrity check (|G-T-N| &le; 0.02t).</li>
+            <li><strong>Sentinel-2 SWIR Satellite:</strong> Remote post-harvest burn audit to auto-issue tamper-proof No-Burn certificates.</li>
+          </ul>
+        </div>
+        <div class="challenge-box">
+          <div class="challenge-row">
+            <strong>⚠️ Challenge:</strong> Door-to-door village audits physically impossible across 3M hectares.
+          </div>
+          <div class="solution-row">
+            <strong>✅ Overcome:</strong> Remote sensing burn audit + digital weighbridge escrow release.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Journey Infographic (xyflow / presentation-ai style) -->
+  <div class="journey-container">
+    <div class="journey-header">
+      <div class="journey-title">
+        <span>🚀</span>
+        <span>Our Hackathon Journey: "Field Ground Truth Over AI Gimmicks"</span>
+      </div>
+      <div class="journey-tagline">Engineered for Punjab's 2-Acre Smallholders with End-to-End Test Verification</div>
+    </div>
+    <div class="journey-steps">
+
+      <!-- Step 1 -->
+      <div class="step-card">
+        <div class="step-badge color-blue">🌾 Phase 1: Field Empathy</div>
+        <h3>Agronomic Ground Truth</h3>
+        <p>Focused on the real crunch: 10–15 days before wheat sowing. Researched PAU trials: 3.6t total vs 2.0t baler recoverable straw.</p>
+      </div>
+
+      <!-- Arrow -->
+      <div class="step-arrow">➜</div>
+
+      <!-- Step 2 -->
+      <div class="step-card">
+        <div class="step-badge color-green">⚙️ Phase 2: Algorithmic Co-Design</div>
+        <h3>OR-Tools & Voice Loop</h3>
+        <p>Formulated CP-SAT spatial clustering in &lt;2.0s; built vernacular speech intake with mandatory audio confirmation modal.</p>
+      </div>
+
+      <!-- Arrow -->
+      <div class="step-arrow">➜</div>
+
+      <!-- Step 3 -->
+      <div class="step-card">
+        <div class="step-badge color-purple">🌱 Phase 3: Production Impact</div>
+        <h3>Circular Green Wealth</h3>
+        <p>100% green tests (pytest 21/21 & flutter). Connecting farmers to SATAT Bio-CNG plants: turning smoke into ₹25k+ income.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom Verification & Footer Bar -->
+  <div class="bottom-bar">
+    <div class="verif-links">
+      <span>🔍 Ground Truth Standards:</span>
+      <a class="verif-link" href="https://github.com/Rishabhbansal005/Parali-setu">GitHub Repository</a>
+      <span>•</span>
+      <a class="verif-link" href="https://developers.google.com/optimization">Google OR-Tools CP-SAT</a>
+      <span>•</span>
+      <a class="verif-link" href="https://sentinels.copernicus.eu">ESA Copernicus Sentinel-2</a>
+      <span>•</span>
+      <a class="verif-link" href="https://mopng.gov.in">MoPNG SATAT Scheme</a>
+    </div>
+    <div>@HSC submission- Template | ParaliSetu: Team Composition, Roles & Engineering Journey</div>
+  </div>
+
+</body>
+</html>

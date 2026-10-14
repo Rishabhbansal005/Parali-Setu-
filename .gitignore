@@ -80,3 +80,14 @@ desktop.ini
 # 8. Permissions (Placeholder README is tracked; real emails/attachments ignored)
 docs/permissions/*
 !docs/permissions/README.md
+
+# 9. Presentation binaries and slide images (project code and scripts tracked only)
+*.pptx
+*.ppt
+*_Slide.png
+docs/diagrams/archify*.png
+docs/diagrams/paralisetu*.png
+docs/diagrams/thumb_*.png
+docs/diagrams/xyflow_*.png
+docs/slides/images/
+
