@@ -1,5 +1,5 @@
 # ParaliSetu — Business Model Canvas (BMC)
-**Hack for Social Hackathon | Theme: Environment & Sustainability**  
+**SEVA First Innovation Challenge 2026 (DTU & Govt. of NCT of Delhi) | Theme: Environment & Sustainability**  
 *Grounded in the Open-Source Business Model Canvas Markdown Template*  
 *Project Repository: [ParaliSetu](https://github.com/Rishabhbansal005/Parali-setu)*
 

@@ -66,7 +66,7 @@ bullet = ParagraphStyle(
 header_data = [
     [
         Paragraph("<b>ParaliSetu — Business Model Canvas</b><br/><font color='#047857' size='8'>AI-Driven Hyperlocal Stubble Supply Chain, Baler Fleet Logistics & Escrow Marketplace</font>", title_style),
-        Paragraph("<b>Hackathon:</b> Hack for Social | <b>Theme:</b> Environment & Sustainability<br/><b>Repository:</b> github.com/Rishabhbansal005/Parali-setu | <b>Target:</b> Punjab & Haryana", subtitle_style)
+        Paragraph("<b>Hackathon:</b> SEVA First Innovation Challenge 2026 (DTU & Delhi Govt) | <b>Theme:</b> Environment & Sustainability<br/><b>Repository:</b> github.com/Rishabhbansal005/Parali-setu | <b>Target:</b> Punjab & Haryana", subtitle_style)
     ]
 ]
 header_table = Table(header_data, colWidths=[480, 260])
